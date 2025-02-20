@@ -6,8 +6,12 @@
 
 @media (min-width: 320px) {
   .xs\:text-3xl {
-      font-size: 1.875rem /* 30px */;
-      line-height: 2.25rem /* 36px */;
+    font-size: 1.875rem
+      /* 30px */
+    ;
+    line-height: 2.25rem
+      /* 36px */
+    ;
   }
 }
 
@@ -15,15 +19,16 @@
   font-family: "Poppins", serif;
   font-weight: 200;
   color-scheme: light dark;
-
 }
 
 body {
   @apply bg-white text-black dark:bg-black dark:text-white;
 }
-.parent:hover{
+
+.parent:hover {
   text-decoration-line: underline;
 }
+
 .parent:hover .child {
   color: rgb(216, 118, 5);
   text-decoration-line: underline;

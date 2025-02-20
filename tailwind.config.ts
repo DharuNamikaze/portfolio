@@ -9,6 +9,9 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      screens: {
+        xs: '480px',
+      },
             translate: {
               '101': '101%',
             },
