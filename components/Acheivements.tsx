@@ -4,7 +4,6 @@ const Acheivements = () => {
     return (
         <section className='min-h-[30rem]'>
         <span className='prb text text-3xl pb-20 items-center flex justify-center '>Problems Solved</span>
-
         <div className='grid grid-cols-4 text-center sm:px-8'>
             <CountUp
                 from={0}

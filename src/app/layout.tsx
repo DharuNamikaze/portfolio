@@ -24,7 +24,7 @@ export default function RootLayout({
             minSize={0.6}
             maxSize={1.6}
             particleDensity={35}
-            particleColor="#ffffff"
+            particleColor="#ffffff" 
             className="absolute inset-0 w-full h-full -z-10"
           />
 
