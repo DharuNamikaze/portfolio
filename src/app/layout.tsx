@@ -35,6 +35,7 @@ export default function RootLayout({
           </Link>
           <ThemeSwitcher />
         </header>
+        <div id="solved"></div>
         {children}
       </body>
     </html>

@@ -28,16 +28,11 @@ const Footer = () => {
           </TextRevealCardDescription>
         </TextRevealCard>
       </div>
-
-      <span>&copy; All Rights Reserved</span>
-      <span>{" "} {new Date().getFullYear()}</span>
-      <br />
-      <br />
-      <section className="socials flex justify-evenly space-x-[-20em] mb-5 bg-transparent">
+      <section className="socials flex justify-evenly mb-5 bg-transparent">
         <Link href="mailto:dharunamikaze@gmail.com" className="text-2xl">
           <BiLogoGmail />
         </Link>
-        <Link href="https://www.linkedin.com/in/dharunn/"  target="_blank" className="text-2xl">
+        <Link href="https://www.linkedin.com/in/dharunn/" target="_blank" className="text-2xl">
           <FaLinkedin />
         </Link>
         <Link href="https://github.com/DharuNamikaze/" target="_blank" className="text-2xl">
@@ -47,6 +42,9 @@ const Footer = () => {
           <FaInstagram />
         </Link>
       </section>
+      <span>&copy; All Rights Reserved</span>
+      <span>{" "} {new Date().getFullYear()}</span>
+      <br />
       <br />
     </section>
   )
