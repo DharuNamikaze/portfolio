@@ -10,9 +10,14 @@ import {
   TextRevealCardDescription,
   TextRevealCardTitle,
 } from "./ui/text-reveal-card";
+import GooeyNav from '../components/ui/GooeyNav';
+
 
 const Footer = () => {
-
+  // update with your own items
+  const items = [
+    { label: "Home", href: "#" }
+  ];
   return (
     <section className='text-[2vh] text-center justify-center dark:bg-transparent bg-white  '>
       <div className="flex items-center justify-center dark:bg-transparent bg-white h-[20rem] rounded-2xl w-full">
@@ -28,6 +33,7 @@ const Footer = () => {
           </TextRevealCardDescription>
         </TextRevealCard>
       </div>
+      
       <section className="socials flex justify-evenly mb-5 bg-transparent">
         <Link href="mailto:dharunamikaze@gmail.com" className="text-2xl">
           <BiLogoGmail />
@@ -42,7 +48,7 @@ const Footer = () => {
           <FaInstagram />
         </Link>
       </section>
-             
+
       <span>&copy; All Rights Reserved</span>
       <span>{" "} {new Date().getFullYear()}</span>
       <br />

@@ -25,11 +25,11 @@ body {
   @apply bg-white text-black dark:bg-black dark:text-white;
 }
 
-.parent:hover {
+.parent {
   text-decoration-line: underline;
 }
 
-.parent:hover .child {
+.child {
   color: rgb(216, 118, 5);
   text-decoration-line: underline;
   text-decoration-color: rgb(216, 118, 5);

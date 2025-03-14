@@ -13,7 +13,6 @@ export default function Home() {
       <Acheivements />
       <Projects />
       {/* <About/> */}
-      
       <footer>
         <Footer />
       </footer>
