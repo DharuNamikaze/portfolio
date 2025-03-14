@@ -2,58 +2,19 @@ import React, { useEffect, useState } from 'react';
 import CountUp from './ui/CountUp';
 
 const Achievements = () => {
-    const [leetSolved, setLeetSolved] = useState(0);
-
-    useEffect(() => {
-        async function fetchLeetCodeData() {
-            const username = 'dharunamikaze'; // Replace with your LeetCode username
-            const apiUrl = `https://alfa-leetcode-api.onrender.com/userProfile/${username}`;
-        
-            try {
-                const response = await fetch(apiUrl);
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.statusText}`);
-                }
-                const data = await response.json();
-                const solvedProblems = data.matchedUser.submitStats.acSubmissionNum[0].count;
-                setLeetSolved(solvedProblems); // Update state with fetched value
-            } catch (error) {
-                console.error('Failed to fetch LeetCode data:', error);
-            }
-        }
-
-        fetchLeetCodeData();
-    }, []);
-
     return (
         <section className="min-h-[30rem]">
             <span className="prb text text-3xl pb-20 items-center flex justify-center">
-                Problems Solved
+                What have i done?...
             </span>
-            <div className="grid grid-cols-4 text-center sm:px-8">
+            <div className="grid grid-cols-2 text-center sm:px-8">
                 <CountUp
                     from={0}
-                    to={leetSolved} // Now dynamically updates
+                    to={100} // Now dynamically updates
                     separator=","
                     direction="up"
                     duration={1}
                     className="leet count-up-text text-5xl font-semibold"
-                />
-                <CountUp
-                    from={0}
-                    to={218}
-                    separator=","
-                    direction="up"
-                    duration={1}
-                    className="count-up-text text-5xl font-semibold"
-                />
-                <CountUp
-                    from={0}
-                    to={110}
-                    separator=","
-                    direction="up"
-                    duration={1}
-                    className="count-up-text text-5xl font-semibold"
                 />
                 <CountUp
                     from={0}
@@ -65,8 +26,6 @@ const Achievements = () => {
                 />
                 <span>Leetcode</span>
                 <span>CodeChef</span>
-                <span>Geeks for Geeks</span>
-                <span>HackerRank</span>
             </div>
 
             <div className="items-center flex justify-center pt-16">

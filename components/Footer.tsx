@@ -38,10 +38,11 @@ const Footer = () => {
         <Link href="https://github.com/DharuNamikaze/" target="_blank" className="text-2xl">
           <FaGithub />
         </Link>
-        <Link href="https://www.linkedin.com/in/dharunn/" target="_blank" className="text-2xl">
+        <Link href="https://www.instagram.com/dharu_namikaze/" target="_blank" className="text-2xl">
           <FaInstagram />
         </Link>
       </section>
+             
       <span>&copy; All Rights Reserved</span>
       <span>{" "} {new Date().getFullYear()}</span>
       <br />

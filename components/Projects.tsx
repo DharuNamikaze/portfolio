@@ -2,8 +2,8 @@ import React from 'react'
 import FlowingMenu from './ui/FlowingMenu'
 const Projects = () => {
   const demoItems = [
-    { link: 'https://github.com/DharuNamikaze/Convertify', text: 'Convertify', image: '' },
-    { link: 'https://github.com/DharuNamikaze/typeD', text: 'Typed', image: '' },
+    { link: 'https://convertify-rho.vercel.app/', text: 'Convertify', image: '' },
+    { link: 'https://type-d.vercel.app/', text: 'Typed', image: '' },
     { link: 'https://github.com/DharuNamikaze/smart-pick', text: 'smartpick', image: '' },
     { link: 'https://github.com/DharuNamikaze/codexp', text: 'Codexp', image: '' },
     { link: 'https://github.com/DharuNamikaze/chroniclesofyou', text: 'ChroniclesOfYou', image:''}
