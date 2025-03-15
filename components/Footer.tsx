@@ -6,14 +6,6 @@ import { BiLogoGmail } from "react-icons/bi";
 import { FaLinkedin } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../components/ui/Dialog";
-import {
   TextRevealCard,
   TextRevealCardDescription,
   TextRevealCardTitle,
@@ -47,9 +39,6 @@ const Footer = () => {
             {""}
           </TextRevealCardDescription>
         </TextRevealCard>
-        <button className="flex" onClick={() => { document.getElementById('form')?.showModal()} }>
-          Contact
-        </button>
       </div>
 
       <section className="socials flex justify-evenly mb-5 mt-[10vh] bg-transparent">
