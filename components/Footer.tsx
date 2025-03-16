@@ -48,9 +48,9 @@ export const Contact = () => {
   return (
     <div className="flex items-center justify-center">
       <form onSubmit={handleSubmit} className="form grid grid-cols-4 gap-4 items-center justify-center text-white dark:bg-transparent">
-        <input type="text" name="name" placeholder="Name" className="col-span-2 rounded-full p-2" />
-        <input type="email" name="email" placeholder="Email" className="col-span-2 rounded-full p-2" />
-        <textarea name="message" placeholder="Write here..." className="col-span-4 rounded-full p-2"></textarea>
+        <input type="text" name="name" placeholder="Name" className="col-span-2 rounded-full p-2" required/>
+        <input type="email" name="email" placeholder="Email" className="col-span-2 rounded-full p-2" required/>
+        <textarea name="message" placeholder="Write your thoughts here..." className="col-span-4 rounded-full p-2" required></textarea>
         <div className="col-span-4 flex justify-center">
           <button type="submit" className="text-black dark:text-white">🤝</button>
         </div>
