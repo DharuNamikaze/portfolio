@@ -11,22 +11,57 @@ import {
   TextRevealCardTitle,
 } from "./ui/text-reveal-card";
 
-const Footer = () => {
+export const Contact = () => {
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const message = formData.get("message");
 
-  <dialog id="form" className="form px-3 py-3 flex flex-col items-center justify-center dark">
-    <div className="w-full max-w-md bg-transparent rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-bold text-gray-200 mb-4">Reach</h2>
-      <form className="flex flex-col">
-        <input placeholder="Full Name" className="bg-transparent text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-white transition ease-in-out duration-150" type="text" />
-        <input placeholder="Email" className="bg-transparent text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-white transition ease-in-out duration-150" type="email" />
-        <textarea placeholder="What's on your mind?" className="bg-transparent text-gray-200 border-0 rounded-md p-2 mb-4 focus:bg-gray-600 focus:outline-none focus:ring-1 focus:ring-white transition ease-in-out duration-150" name="cover_letter" defaultValue={""} />
-        <button className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150" type="submit">Submit</button>
-      </form>
-    </div>
-  </dialog>
+    if (!name || !email || !message) {
+      alert("Oh, Nice try!");
+      return;
+    }
+
+    formData.append("access_key", "8f8c1a2e-2b4a-4779-80e4-b33fc37a3fc5");
+
+    const object = Object.fromEntries(formData);
+    const json = JSON.stringify(object);
+
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: json
+    });
+    const result = await response.json();
+    if (result.success) {
+      console.log(result);
+      alert("Message Sent. Thank you for reaching out!");
+      document.querySelector("form")?.reset();
+    }
+  }
 
   return (
-    <section className='text-[2vh] text-center justify-center dark:bg-transparent bg-white mt-[10vh] '>
+    <div className="flex items-center justify-center">
+      <form onSubmit={handleSubmit} className="form grid grid-cols-4 gap-4 items-center justify-center text-white dark:bg-transparent">
+        <input type="text" name="name" placeholder="Name" className="col-span-2 rounded-full p-2" />
+        <input type="email" name="email" placeholder="Email" className="col-span-2 rounded-full p-2" />
+        <textarea name="message" placeholder="Write here..." className="col-span-4 rounded-full p-2"></textarea>
+        <div className="col-span-4 flex justify-center">
+          <button type="submit" className="text-black dark:text-white">🤝</button>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+const Footer = () => {
+  return (
+    <section className='text-[2vh] text-center justify-center dark:bg-transparent bg-white mt-[10vh]'>
       <div className="flex flex-col space-y-5 items-center justify-center dark:bg-transparent bg-white h-[20rem] rounded-2xl w-full">
         <TextRevealCard
           text="You know the business"
@@ -40,8 +75,11 @@ const Footer = () => {
           </TextRevealCardDescription>
         </TextRevealCard>
       </div>
-
-      <section className="socials flex justify-evenly mb-5 mt-[10vh] bg-transparent">
+      {/* <h1 className="text-bold text-2xl mb-5 underline underline-offset-2 pt-10">Got anything in your mind?</h1> */}
+      <div className="flex justify-center pb-10">
+        <Contact />
+      </div>
+      <section className="socials flex justify-evenly mb-5 bg-transparent">
         <Link href="mailto:dharunamikaze@gmail.com" className="text-2xl">
           <BiLogoGmail />
         </Link>
@@ -55,13 +93,12 @@ const Footer = () => {
           <FaInstagram />
         </Link>
       </section>
-
       <span>&copy; All Rights Reserved</span>
       <span>{" "} {new Date().getFullYear()}</span>
       <br />
       <br />
-    </section >
+    </section>
   )
 }
 
-export default Footer
+export default Footer;
