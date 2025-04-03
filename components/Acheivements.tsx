@@ -15,7 +15,7 @@ const Achievements = () => {
 
                 <CountUp
                     from={0}
-                    to={100} // Now dynamically updates
+                    to={102} // Now dynamically updates
                     separator=","
                     direction="up"
                     duration={1}
@@ -24,7 +24,7 @@ const Achievements = () => {
 
                 <CountUp
                     from={0}
-                    to={223}
+                    to={327}
                     separator=","
                     direction="up"
                     duration={1}
@@ -45,7 +45,7 @@ const Achievements = () => {
             <div className="grid grid-cols-2 text-center mx-[10vh] lg:mx-[42vh] sm:px-8">
                 <CountUp
                     from={0}
-                    to={53} // Now dynamically updates
+                    to={58} // Now dynamically updates
                     separator=","
                     direction="up"
                     duration={1}
@@ -53,7 +53,7 @@ const Achievements = () => {
                 />
                 <CountUp
                     from={0}
-                    to={138}
+                    to={152}
                     separator=","
                     direction="up"
                     duration={1}
