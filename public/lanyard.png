@@ -1,7 +1,0 @@
-The file /portfolio/portfolio/public/lanyard.png is intended to be a texture image used for the lanyard's band in the Lanyard component. Since I cannot create image files directly, you will need to provide the actual image file. 
-
-However, I can guide you on how to create a placeholder image or suggest that you use an existing image. If you have a specific image in mind, you can place it in the public directory and name it `lanyard.png`.
-
-If you want to create a placeholder image, you can use an online tool to generate a simple PNG image and save it as `lanyard.png` in the specified directory. 
-
-If you need further assistance with any other files or configurations, feel free to ask!
