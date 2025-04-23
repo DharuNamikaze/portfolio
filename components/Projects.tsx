@@ -4,7 +4,7 @@ const Projects = () => {
   const demoItems = [
     { link: 'https://convertify-rho.vercel.app/', text: 'Convertify', image: '' },
     { link: 'https://type-d.vercel.app/', text: 'Typed', image: '' },
-    { link: 'https://github.com/DharuNamikaze/smart-pick', text: 'smartpick', image: '' },
+    { link: 'https://smart-pick-nu.vercel.app/', text: 'smartpick', image: '' },
     { link: 'https://github.com/DharuNamikaze/codexp', text: 'Codexp', image: '' },
     { link: 'https://github.com/DharuNamikaze/chroniclesofyou', text: 'ChroniclesOfYou', image:''}
   ];
