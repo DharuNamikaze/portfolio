@@ -1,11 +1,10 @@
-'use client'
 import "./globals.css";
 import React from "react";
 import { SparklesCore } from "../../components/ui/sparkles";
 import ThemeSwitcher from '../../components/ThemeProvider';
 import Link from "next/link";
 
-function randomColor(){
+function randomColor() {
   let hex = "#"
   const range = "50b149c6d2707ef8a"
   for (let i = 0; i < 6; i++) {
@@ -19,7 +18,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
 
   return (
     <html lang="en">
@@ -48,7 +46,6 @@ export default function RootLayout({
           </Link>
           <ThemeSwitcher />
         </header>
-        <div id="solved"></div>
         {children}
       </body>
     </html>
