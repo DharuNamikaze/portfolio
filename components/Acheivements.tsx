@@ -2,7 +2,22 @@
 import React, { useEffect, useState } from "react";
 import CountUp from './ui/CountUp';
 
+
 const Achievements = () => {
+    const [solvedProblems, setSolvedProblems] = useState<number>(0)
+    useEffect(() => {
+        const fetchSolvedProblems = async () => {
+            try {
+                const response = await fetch("https://alfa-leetcode-api.vercel.app/dharunamikaze/solved")
+                const data = response.json()
+                setSolvedProblems(prev => data.totalSolved || 0);
+                
+            } catch (error: unknown) {
+                console.error(error, "error fetching data from leetcode")
+            }
+        }
+        fetchSolvedProblems()
+    }, [])
     return (
         <section className="min-h-[30rem]">
             <span className="prb text text-3xl pb-10 items-center flex justify-center">
