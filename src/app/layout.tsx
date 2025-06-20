@@ -7,7 +7,7 @@ import Link from "next/link";
 
 function randomColor(){
   let hex = "#"
-  const range = "50b249c6d137ef8a"
+  const range = "50b149c6d2707ef8a"
   for (let i = 0; i < 6; i++) {
     hex += range[Math.floor(Math.random() * 16)];
   }
