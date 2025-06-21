@@ -24,7 +24,7 @@ const Achievements = () => {
 
                 <CountUp
                     from={0}
-                    to={349}
+                    to={358}
                     separator=","
                     direction="up"
                     duration={1}
@@ -53,7 +53,7 @@ const Achievements = () => {
                 />
                 <CountUp
                     from={0}
-                    to={240}
+                    to={295}
                     separator=","
                     direction="up"
                     duration={1}
