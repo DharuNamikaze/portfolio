@@ -9,7 +9,7 @@ function randomColor(){
   let hex = "#"
   const range = "50b149c6d2707ef8a"
   for (let i = 0; i < 6; i++) {
-    hex += range[Math.floor(Math.random() * 16)];
+    hex += range[Math.floor(Math.random() * 8)];
   }
   return hex
 }
