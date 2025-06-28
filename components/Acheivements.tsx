@@ -8,10 +8,9 @@ const Achievements = () => {
     useEffect(() => {
         const fetchSolvedProblems = async () => {
             try {
-                const response = await fetch("https://alfa-leetcode-api.vercel.app/dharunamikaze/solved")
+                const response = await fetch("https://alfa-leetcode-api.vercel.app/dharu_namikaze/solved")
                 const data = response.json()
-                setSolvedProblems(prev => data.totalSolved || 0);
-                
+                setSolvedProblems(data.totalSolved || 0);
             } catch (error: unknown) {
                 console.error(error, "error fetching data from leetcode")
             }
@@ -32,7 +31,7 @@ const Achievements = () => {
 
                 <CountUp
                     from={0}
-                    to={115} // Now dynamically updates
+                    to={solvedProblems} // Now dynamically updates
                     separator=","
                     direction="up"
                     duration={1}
