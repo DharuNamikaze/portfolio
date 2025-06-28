@@ -8,11 +8,12 @@ const Achievements = () => {
     useEffect(() => {
         const fetchSolvedProblems = async () => {
             try {
-                const response = await fetch("https://alfa-leetcode-api.vercel.app/dharu_namikaze/solved")
-                const data = response.json()
-                setSolvedProblems(data.totalSolved || 0);
+                const response = await fetch("https://alfa-leetcode-api.vercel.app/dharu_namikaze/solved");
+                const data = await response.json();
+                console.log('API Response:', data); // Log the response to inspect its structure
+                setSolvedProblems(data.solved || 0); // Replace 'solved' with the correct property name based on the logged structure
             } catch (error: unknown) {
-                console.error(error, "error fetching data from leetcode")
+                console.error('Error fetching data from LeetCode:', error);
             }
         }
         fetchSolvedProblems()
