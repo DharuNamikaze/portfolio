@@ -8,12 +8,16 @@ const Achievements = () => {
     useEffect(() => {
         const fetchSolvedProblems = async () => {
             try {
-                const response = await fetch("https://alfa-leetcode-api.vercel.app/dharu_namikaze/solved");
+                const response = await fetch("/api/leetcode/dharu_namikaze/solved"); // Use proxy to handle CORS
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const data = await response.json();
                 console.log('API Response:', data); // Log the response to inspect its structure
                 setSolvedProblems(data.solved || 0); // Replace 'solved' with the correct property name based on the logged structure
             } catch (error: unknown) {
                 console.error('Error fetching data from LeetCode:', error);
+                setSolvedProblems(0); // Fallback value
             }
         }
         fetchSolvedProblems()
