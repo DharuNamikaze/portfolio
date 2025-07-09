@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import CountUp from './ui/CountUp';
 
-
 const Achievements = () => {
     const [solvedProblems, setSolvedProblems] = useState<number>(0)
     useEffect(() => {
@@ -30,13 +29,12 @@ const Achievements = () => {
             {/* <span className='flex justify-center text-2xl'>DSA</span> */}
             <div className="grid grid-cols-2 text-center mx-[10vh] lg:mx-[42vh] sm:px-8">
 
-
                 <span>Active Days</span>
                 <span>Problems Solved</span>
 
                 <CountUp
                     from={0}
-                    to={solvedProblems} // Now dynamically updates
+                    to={110} // Now dynamically updates
                     separator=","
                     direction="up"
                     duration={1}
@@ -74,7 +72,7 @@ const Achievements = () => {
                 />
                 <CountUp
                     from={0}
-                    to={295}
+                    to={317}
                     separator=","
                     direction="up"
                     duration={1}
