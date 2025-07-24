@@ -3,6 +3,12 @@ import React from "react";
 import { SparklesCore } from "../../components/ui/sparkles";
 import ThemeSwitcher from '../../components/ThemeProvider';
 import Link from "next/link";
+import { Inter } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display:'swap', 
+});
 
 function randomColor() {
   let hex = "#"
@@ -20,13 +26,10 @@ export default function RootLayout({
 }) {
 
   return (
-    <html lang="en">
+    <html lang="en" className={inter.className}>
       <head>
         <title>Dharu&apos;s Portfolio</title>
-        <style>
-          {`@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');`}
-        </style>
-        <link rel="shortcut icon" href="assets/favicon.svg" type="image/x-icon" />
+        <link rel="shortcut icon" href="assets/favicon-min.svg" type="image/x-icon" />
       </head>
       <body className="relative min-h-screen">
         <SparklesCore

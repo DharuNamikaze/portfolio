@@ -1,4 +1,3 @@
-'use client'
 import Projects from "../../components/Projects";
 import "./globals.css";
 import Acheivements from "../../components/Acheivements";
