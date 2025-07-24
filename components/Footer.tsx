@@ -67,7 +67,7 @@ export const Contact = () => {
 
 const Footer = () => {
   return (
-    <section className='text-[2vh] text-center justify-center dark:bg-transparent bg-white mt-[10vh] mb-10'>
+    <section className='text-[2vh] text-center justify-center dark:bg-transparent bg-white mt-[10vh] mb-2   '>
       <div className="flex flex-col space-y-5 items-center justify-center dark:bg-transparent bg-white h-[20rem] rounded-2xl w-full">
         <TextRevealCard
           text="You know the business"
