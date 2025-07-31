@@ -99,10 +99,8 @@ const Footer = () => {
           <FaInstagram />
         </Link>
       </section>
-      <span>&copy; All Rights Reserved</span>
-      <span>{" "} {new Date().getFullYear()}</span>
-      <br />
-      <br />
+      <span>&copy; Human Rights Reserved 2025</span>
+      {/* {new Date().getFullYear()} */}
     </section>
   )
 }

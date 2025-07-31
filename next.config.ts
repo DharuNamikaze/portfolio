@@ -1,14 +1,20 @@
-import type { NextConfig } from "next";
+import { NextConfig } from 'next';
+import withBundleAnalyzer from '@next/bundle-analyzer';
 
+/** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
-  async rewrites() {
-    return [
-      {
-        source: '/api/leetcode/:path*',
-        destination: 'https://alfa-leetcode-api.vercel.app/:path*',
-      },
-    ];
-  },
+  // Your Next.js configuration options go here
+  // For example:
+  // reactStrictMode: true,
+  // swcMinify: true,
+  // images: {
+  //   domains: ['example.com'],
+  // },
 };
 
-export default nextConfig;
+const bundleAnalyzerConfig = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+// Export the combined configuration
+export default bundleAnalyzerConfig(nextConfig);

@@ -13,17 +13,11 @@
     ;
   }
 }
-* {
-  color-scheme: light dark;
-}
 
 body {
   @apply bg-white text-black dark:bg-black dark:text-white;
-}
+} 
 
-.parent {
-  text-decoration-line: underline;
-}
 
 .child {
   color: rgb(216, 118, 5);

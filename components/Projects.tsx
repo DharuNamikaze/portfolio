@@ -3,12 +3,11 @@ import FlowingMenu from './ui/FlowingMenu'
 const Projects = () => {
 
   const demoItems = [
+    { link: 'https://github.com/DharuNamikaze/smol-mcp', text: 'smol-mcp', image: '' },
     { link: 'https://convertify-rho.vercel.app/', text: 'Convertify', image: '' },
-    { link: 'https://type-d.vercel.app/', text: 'Typed', image: '' },
     { link: 'https://my-odyssey.vercel.app/', text: 'Odyssey', image: '' },
-    { link: 'https://smart-pick-nu.vercel.app/', text: 'smartpick', image: '' },
-    { link: 'https://github.com/DharuNamikaze/chroniclesofyou', text: 'ChroniclesOfYou', image: '' },
-    { link: 'https://github.com/DharuNamikaze/cellsaver', text: 'CellSaver', image: '' }
+    { link: 'https://type-d.vercel.app/', text: 'Typed', image: '' },
+    { link: 'https://smart-pick-nu.vercel.app/', text: 'Gitgpt', image: '' }
   ];
 
   return (

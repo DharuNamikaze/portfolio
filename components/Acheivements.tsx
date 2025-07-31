@@ -56,7 +56,7 @@ const Achievements = () => {
             <Link
                 href={"https://codolio.com/profile/dharu_namikaze"}
                 target="_blank"
-                className="parent items-center justify-center pb-10 flex"
+                className="items-center justify-center pb-10 flex"
             >
                 Cod<span className="child">olio</span>
             </Link>
