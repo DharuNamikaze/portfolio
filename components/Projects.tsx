@@ -13,7 +13,7 @@ const Projects = () => {
   return (
     <section className='min-h-[43rem] pt-10'>
       <span className='text-bold text-3xl mb-5 items-center flex justify-center '>Projects</span>
-      <div style={{ height: '600px', position: 'relative' }}>
+      <div className="h-[500px] relative">
         <FlowingMenu items={demoItems} />
       </div>
 
