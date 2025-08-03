@@ -4,7 +4,7 @@ import { FaGithub } from "react-icons/fa";
 import { BiLogoGmail } from "react-icons/bi";
 import { FaLinkedin } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
-import { FormHandler } from "./FormHandler";
+import { FormHandler } from "../components/FormHandler";
 
 const Footer = () => {
   return (
