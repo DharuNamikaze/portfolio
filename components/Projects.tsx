@@ -2,16 +2,7 @@
 import React from 'react'
 import Link from 'next/link';
 import '../src/app/globals.css'
-import Image from 'next/image';
 const Projects = () => {
-
-  const demoItems = [
-    { link: 'https://github.com/DharuNamikaze/smol-mcp', text: 'smol-mcp', image: '' },
-    { link: 'https://convertify-rho.vercel.app/', text: 'Convertify', image: '' },
-    { link: 'https://my-odyssey.vercel.app/', text: 'Odyssey', image: '' },
-    { link: 'https://type-d.vercel.app/', text: 'Typed', image: '' },
-    { link: 'https://smart-pick-nu.vercel.app/', text: 'Gitgpt', image: '' }
-  ];
 
   return (
     <section className='min-h-[43rem] pt-10'>
@@ -26,7 +17,6 @@ const Projects = () => {
         <Link className='p-8 bg-purple-600 col-span-2 row-span-3 rounded-2xl BentoGrid6 bg-cover ease-in-out cursor-wait hover:scale-105  duration-500' href="https://github.com/DharuNamikaze/cellsaver" target='_blank'>Cellsaver</Link>
         <Link className='p-8 bg-indigo-500 col-span-2 row-span-3 rounded-2xl BentoGrid7 bg-cover hover:scale-105 ease-in-out duration-500 ' href="https://smart-pick-nu.vercel.app/" target='_blank'>Smartpick</Link>
       </div>
-
     </section>
   )
 }
