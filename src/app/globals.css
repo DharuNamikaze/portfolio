@@ -16,7 +16,7 @@
 
 body {
   @apply bg-white text-black dark:bg-black dark:text-white;
-} 
+}
 
 
 .child {
@@ -24,6 +24,60 @@ body {
   text-decoration-line: underline;
   text-decoration-color: rgb(216, 118, 5);
 }
+
+.BentoGrid {
+  background-image: url(../../public/assets/mcp.heif);
+  background-size: cover;
+  background-position: center;
+}
+
+.BentoGrid:hover {
+  background-image: url(../../public/assets/mcp.heif);
+  background-position: center;
+  box-shadow: inset 0 0 75 rgba(0, 0, 0, 0.8);
+}
+
+.BentoGrid4 {
+  color: white;
+  background-image: url(../../public/assets/odyssey.heif);
+  filter: blur(2px);
+}
+
+.BentoGrid4:hover {
+  color: white;
+  background-image: url(../../public/assets/odyssey.heif);
+  filter: blur(0px)
+}
+
+.BentoGrid3 {
+  color: white;
+  background-image: url(../../public/assets/typed.heif);
+  background-position: cover;
+  background-size: fill;
+  filter: blur(2px);
+}
+
+.BentoGrid3:hover {
+  color: white;
+  background-image: url(../../public/assets/typed.heif);
+  background-position: center;
+  filter: blur(0px)
+}
+.BentoGrid2 {
+  color: white;
+  background-image: url(../../public/assets/convertify.heif);
+  background-position: cover;
+  background-size: fill;
+  filter: blur(2px);
+}
+
+.BentoGrid2:hover {
+  color: white;
+  background-image: url(../../public/assets/convertify.heif);
+  background-position: center;
+  filter: blur(0px)
+}
+
 
 /* .prb::before{
   content: "";

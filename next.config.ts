@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
   // swcMinify: true,
   // images: {
   //   domains: ['example.com'],
+
+  
   // },
 };
 
