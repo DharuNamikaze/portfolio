@@ -1,13 +1,13 @@
 import "./globals.css";
 import React from "react";
 import { SparklesCore } from "../../components/ui/sparkles";
-import ThemeSwitcher from '../../components/ThemeProvider';
+import ThemeSwitcher from '../../components/ThemeSwitcher';
 import Link from "next/link";
 import { Inter } from 'next/font/google';
 
 const inter = Inter({
   subsets: ['latin'],
-  display:'swap', 
+  display: 'swap',
 });
 
 function randomColor() {
@@ -19,12 +19,7 @@ function randomColor() {
   return hex
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.className}>
       <head>
@@ -45,7 +40,7 @@ export default function RootLayout({
         {/* Header */}
         <header className="relative flex pt-16 px-10 lg:pt-20 lg:px-20 md:pt-16 md:px-16 sm:px-16 sm:pt-16 justify-between gap-10 font-semibold sm:text-3xl lg:text-4xl text-2xl z-10">
           <Link href="/">
-            <button>Dharun</button>
+            <span>Dharun</span>
           </Link>
           <ThemeSwitcher />
         </header>
