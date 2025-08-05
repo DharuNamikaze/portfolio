@@ -8,12 +8,12 @@ import { FormHandler } from "../components/FormHandler";
 
 const Footer = () => {
   return (
-    <section className='text-[2vh] text-center justify-center dark:bg-transparent bg-white mt-[10vh] mb-2   '>
+    <section className='text-[2vh] text-center justify-center dark:bg-transparent mt-[10vh] mb-2   '>
       {/* <h1 className="text-bold text-2xl mb-5 underline underline-offset-2 pt-10">Got anything in your mind?</h1> */}
-      <div className="flex justify-center pb-10">
+      <div className="flex justify-center pb-10 ">
         <FormHandler />
       </div>
-      <section className="socials flex justify-center gap-10 mb-8 bg-transparent">
+      <section className="socials flex justify-center gap-10 mb-8 bg-transparent  ">
         <Link href="mailto:dharunamikaze@gmail.com" className="text-2xl">
           <BiLogoGmail />
         </Link>

@@ -10,7 +10,6 @@ export default function Home() {
       <Intro />
       <Acheivements />
       <Projects />
-      {/* <About/> */}
       <Footer />
     </>
   );

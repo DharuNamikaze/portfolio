@@ -42,7 +42,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Link href="/">
             <span>Dharun</span>
           </Link>
-          <ThemeSwitcher />
+          <div className="flex items-center gap-8">
+            <Link href="/blog" className="text-lg hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              Blog
+            </Link>
+            <ThemeSwitcher />
+          </div>
         </header>
         {children}
       </body>

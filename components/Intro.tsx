@@ -12,10 +12,6 @@ const Intro = () => {
                         Resume
                     </button>
                 </Link>
-                <Link href='/Blogs'>
-                    <button type='button' className="text-lg mt-2 px-2 py-2 rounded-md border dark:border-white dark:text-white border-black text-black hover:underline transition-colors">
-                        Blogs</button>
-                </Link>
             </div>
 
         </section>

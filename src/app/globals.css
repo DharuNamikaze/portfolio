@@ -14,6 +14,9 @@
   }
 }
 
+/* Base blog styles - use these Tailwind classes */
+
+
 body {
   @apply bg-white text-black dark:bg-black dark:text-white;
 }
