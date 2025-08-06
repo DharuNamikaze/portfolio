@@ -9,8 +9,8 @@ Create a new `.md` file in this directory with a URL-friendly name:
 - `learning-nextjs.md`
 - `web-development-tips.md`
 
-## 2. Add Frontmatter
-
+## 2. Add Frontmatter   
+    
 At the top of your file, add YAML frontmatter:
 
 ```yaml

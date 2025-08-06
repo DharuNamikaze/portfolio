@@ -1,6 +1,9 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getBlogPost, getBlogPosts } from '../../../../lib/blog';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 
 interface BlogPostPageProps {
   params: {
@@ -9,15 +12,12 @@ interface BlogPostPageProps {
 }
 
 export async function generateStaticParams() {
-  const posts = getBlogPosts();
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
+  const posts = getBlogPosts(); return posts.map((post) => ({ slug: post.slug, }));
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps) {
   const post = getBlogPost(params.slug);
-  
+
   if (!post) {
     return {
       title: 'Post Not Found',
@@ -38,16 +38,16 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
   }
 
   return (
-    <article className="max-w-4xl mx-auto py-20 px-4">
-      <Link 
-        href="/blog" 
+    <article className="max-w-5xl mx-auto py-20 px-4">
+      <Link
+        href="/blog"
         className="text-blue-600 dark:text-blue-400 hover:underline mb-8 inline-block"
       >
         ← Back to Blog
       </Link>
-      
+
       <header className="mb-8">
-        <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+        <h1 className="text-[6vh] font-bold mb-4">{post.title}</h1>
         <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
           <span>{new Date(post.date).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -71,8 +71,13 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         )}
       </header>
 
-      <div className="prose prose-lg dark:prose-invert max-w-none">
-        <div className="whitespace-pre-wrap">{post.content}</div>
+      <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:rounded prose-code:px-1">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw]}
+        >
+          {post.content}
+        </ReactMarkdown>
       </div>
     </article>
   );
