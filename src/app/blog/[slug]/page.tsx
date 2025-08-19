@@ -6,9 +6,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 
 interface BlogPostPageProps {
-  params: {
-    slug: string;
-  };
+  params: Promise<{slug: string}>
 }
 
 export async function generateStaticParams() {
@@ -16,7 +14,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps) {
-  const post = getBlogPost(params.slug);
+  const post = getBlogPost((await params).slug);
 
   if (!post) {
     return {
@@ -30,8 +28,8 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
   };
 }
 
-export default function BlogPostPage({ params }: BlogPostPageProps) {
-  const post = getBlogPost(params.slug);
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const post = getBlogPost((await params).slug);
 
   if (!post) {
     notFound();
