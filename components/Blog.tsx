@@ -1,3 +1,4 @@
+'use server'
 import Link from 'next/link';
 import { getBlogPosts } from '../lib/blog';
 
@@ -30,8 +31,6 @@ export default function Blog() {
                 </h3>
                 <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-3">
                   <span>{new Date(post.date).toLocaleDateString()}</span>
-                  <span className="mx-2">•</span>
-                  <span>{post.author}</span>
                 </div>
                 <p className="text-gray-700 dark:text-gray-300 mb-3">{post.excerpt}</p>
                 {post.tags.length > 0 && (

@@ -17,7 +17,6 @@ At the top of your file, add YAML frontmatter:
 ---
 title: "Your Post Title"
 date: "YYYY-MM-DD"
-author: "Your Name"
 tags: ["tag1", "tag2", "tag3"]
 ---
 ```
@@ -32,7 +31,6 @@ Write your blog post using Markdown syntax below the frontmatter.
 ---
 title: "My Amazing Post"
 date: "2024-12-19"
-author: "Dharun"
 tags: ["javascript", "tutorial"]
 ---
 

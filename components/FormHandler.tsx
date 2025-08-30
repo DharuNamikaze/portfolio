@@ -47,7 +47,7 @@ export const FormHandler = () => {
         <input type="email" name="email" placeholder="Email" className="col-span-2 rounded-full p-2" required />
         <textarea name="message" placeholder="Write your thoughts here..." className="col-span-4 rounded-full p-2" required></textarea>
         <div className="col-span-4 flex justify-center">
-          <button type="submit" className="">🤝</button>
+          <button title="handShake!" type="submit" className="">🤝</button>
         </div>
       </form>
     </div>

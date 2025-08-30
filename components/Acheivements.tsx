@@ -1,32 +1,14 @@
+'use server'
 import React from "react";
 import CountUp from './ui/CountUp';
 import Link from "next/link";
 
 const Achievements = () => {
-    // const [solvedProblems, setSolvedProblems] = useState<number>(0)
-    // useEffect(() => {
-    //     const fetchSolvedProblems = async () => {
-    //         try {
-    //             const response = await fetch("https://alfa-leetcode-api.vercel.app/dharunamikaze/solved"); // Use full API URL
-    //             if (!response.ok) {
-    //                 throw new Error(`HTTP error! status: ${response.status}`);
-    //             }
-    //             const data = await response.json();
-    //             console.log('API Response:', data); // Log the response to inspect its structure
-    //             setSolvedProblems(data.solved || 0); // Replace 'solved' with the correct property name based on the logged structure
-    //         } catch (error) {
-    //             console.error('Error fetching data from LeetCode:', error);
-    //             setSolvedProblems(0); // Fallback value
-    //         }
-    //     }
-    //     fetchSolvedProblems()
-    // }, [])
     return (
         <section className="min-h-[30rem]">
             <span className="prb text text-3xl pb-10 items-center flex justify-center">
                 Current Streak
             </span>
-            {/* <span className='flex justify-center text-2xl'>DSA</span> */}
             <div className="grid grid-cols-2 text-center mx-[10vh] lg:mx-[42vh] sm:px-8">
 
                 <span>Active Days</span>

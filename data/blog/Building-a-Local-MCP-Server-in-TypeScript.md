@@ -1,7 +1,6 @@
 ---
 title: "Building a Local MCP Server in Typescript"
 date: "2025-08-05"
-author: "Namikaze"
 tags: ["MCP", "Typescript", "AI", "LLM"]
 ---
 

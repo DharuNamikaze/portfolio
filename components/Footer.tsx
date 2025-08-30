@@ -1,10 +1,25 @@
+'use client'
 import React from "react";
 import Link from "next/link";
-import { FaGithub } from "react-icons/fa";
-import { BiLogoGmail } from "react-icons/bi";
-import { FaLinkedin } from "react-icons/fa";
-import { FaInstagram } from "react-icons/fa";
 import { FormHandler } from "../components/FormHandler";
+import dynamic from 'next/dynamic';
+
+// Dynamic imports for icons
+const FaGithub = dynamic(() => import("react-icons/fa").then(mod => ({ default: mod.FaGithub })), {
+  loading: () => <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
+});
+
+const BiLogoGmail = dynamic(() => import("react-icons/bi").then(mod => ({ default: mod.BiLogoGmail })), {
+  loading: () => <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
+});
+
+const FaLinkedin = dynamic(() => import("react-icons/fa").then(mod => ({ default: mod.FaLinkedin })), {
+  loading: () => <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
+});
+
+const FaInstagram = dynamic(() => import("react-icons/fa").then(mod => ({ default: mod.FaInstagram })), {
+  loading: () => <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
+});
 
 const Footer = () => {
   return (
