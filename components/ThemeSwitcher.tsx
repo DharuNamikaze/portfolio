@@ -20,7 +20,7 @@ export default function ThemeSwitcher() {
   };
 
   return (
-    <button onClick={toggleTheme}>
+    <button aria-label="Toggle Theme" title="Toggle Theme" type="button" onClick={toggleTheme}>
       {theme === "light" ? <MdDarkMode /> : <MdLightMode />}
     </button>
   );
