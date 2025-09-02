@@ -20,6 +20,7 @@ export default function BlogPage() {
               No blog posts yet. Check back soon!
             </p>
             <Link 
+            aria-label='Back to home'
               href="/" 
               className="text-blue-600 dark:text-blue-400 hover:underline"
             >
@@ -29,7 +30,7 @@ export default function BlogPage() {
         ) : (
           <div className="space-y-8">
             {posts.map((post) => (
-              <Link key={post.slug} href={`/blog/${post.slug}`} className="block">
+              <Link aria-label='Blogpost' key={post.slug} href={`/blog/${post.slug}`} className="block">
                 <article className="border rounded-lg p-6 hover:shadow-lg transition-shadow cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800">
                   <h2 className="text-2xl font-semibold mb-2 text-blue-600 dark:text-blue-400">
                     {post.title}

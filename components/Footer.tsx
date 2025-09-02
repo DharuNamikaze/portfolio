@@ -14,16 +14,16 @@ const Footer = () => {
         <FormHandler />
       </div>
       <section className="socials flex justify-center gap-10 mb-8 bg-transparent  ">
-        <Link href="mailto:dharunamikaze@gmail.com" className="text-2xl">
+        <Link aria-label="Mail me" href="mailto:dharunamikaze@gmail.com" className="text-2xl">
           <BiLogoGmail />
         </Link>
-        <Link href="https://www.linkedin.com/in/dharunn/" target="_blank" className="text-2xl">
+        <Link aria-label="Linkedin profile" href="https://www.linkedin.com/in/dharunn/" target="_blank" className="text-2xl">
           <FaLinkedin />
         </Link>
-        <Link href="https://github.com/DharuNamikaze/" target="_blank" className="text-2xl">
+        <Link aria-label="Github profile" href="https://github.com/DharuNamikaze/" target="_blank" className="text-2xl">
           <FaGithub />
         </Link>
-        <Link href="https://www.instagram.com/dharu_namikaze/" target="_blank" className="text-2xl">
+        <Link aria-label="Instagram" href="https://www.instagram.com/dharu_namikaze/" target="_blank" className="text-2xl">
           <FaInstagram />
         </Link>
       </section>

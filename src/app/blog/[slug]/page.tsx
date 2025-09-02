@@ -38,6 +38,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   return (
     <article className="max-w-5xl mx-auto py-20 px-4">
       <Link
+      aria-label='Return to blogs'
         href="/blog"
         className="text-blue-600 dark:text-blue-400 hover:underline mb-8 inline-block"
       >

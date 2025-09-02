@@ -13,7 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={inter.className}>
       <head>
         <title>Dharu&apos;s Portfolio</title>
-        <link rel="shortcut icon" href="assets/favicon-min.heif" type="image/x-icon" />
+        <link rel="shortcut icon" href="/assets/favicon-min.heif" type="image/x-icon" />
       </head>
       <body className="relative min-h-screen mx-auto">
         <Header />

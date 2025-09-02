@@ -40,11 +40,11 @@ export default function Header() {
                 />
             )}
             <header className="relative flex pt-16 px-10 lg:pt-20 lg:px-20 md:pt-16 md:px-16 sm:px-16 sm:pt-16 justify-between gap-10 font-semibold sm:text-3xl lg:text-4xl text-2xl z-10 mx-auto ">
-                <Link href="/">
+                <Link aria-label="My Name is Dharun R!" href="/">
                     <span>Dharun</span>
                 </Link>
                 <div className="flex items-center gap-8">
-                    <Link href="/blog" className="text-xl hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                    <Link aria-label="visit my blog here" href="/blog" className="text-xl hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                         Blog
                     </Link>
                     <button type="button" title={showSparkles ? "Turn off Sparkles" : "Turn on Sparkles"} onClick={handleSparkles}>
