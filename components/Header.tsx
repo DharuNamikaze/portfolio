@@ -26,8 +26,6 @@ function randomColor() {
 export default function Header() {
     const [showSparkles, setShowSparkles] = useState(true);
     const [isMounted, setIsMounted] = useState(false);
-    // Generate the color only once
-    const [sparkleColor] = useState(() => randomColor());
 
     const handleSparkles = () => {
         setShowSparkles(prev => !prev);
@@ -46,7 +44,7 @@ export default function Header() {
                     minSize={0.6}
                     maxSize={1.6}
                     particleDensity={35}
-                    particleColor={sparkleColor}
+                    particleColor={randomColor()}
                     className="absolute inset-0 w-full h-full -z-10"
                 />
             )}
