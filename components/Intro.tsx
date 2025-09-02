@@ -8,7 +8,7 @@ const Intro = () => {
             <span className='block text-sm sm:px-10 px-4 py-4'>Hi, I&apos;m Dharun R currently pursuing Artificial Intelligence and Data Science at KIT-CBE  blending creativity &amp; computation as a developer, building cool things.</span>
             <div className='flex items-center gap-2'>
                 <Link aria-label='My Resume' href="/DharunR_resume.pdf" target='_blank' className=''>
-                    <button title='Resume' type='button' className="text-lg mt-2 px-3 py-2 rounded-md border dark:border-white dark:bg-white dark:text-black border-white bg-black text-white dark:hover:bg-slate-300  hover:bg-zinc-700 transition duration-300">
+                    <button title='Resume' type='button' className="text-lg p-2 m-1 rounded-md border dark:border-white dark:bg-white dark:text-black border-white bg-black text-white dark:hover:bg-slate-300  hover:bg-zinc-700 transition duration-300">
                         Resume
                     </button>
                 </Link>
