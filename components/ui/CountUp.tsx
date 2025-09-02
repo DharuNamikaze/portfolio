@@ -36,8 +36,7 @@ export default function CountUp({
     const damping = 20 + 40 * (1 / duration);
     const stiffness = 100 * (1 / duration);
     const springValue = useSpring(motionValue, { damping, stiffness });
-    const isInView = useInView(ref, { amount: 0.1 });
-
+    const isInView = useInView(ref, { threshold: 0.1 });
 
     // (useInView hook replaces manual IntersectionObserver)
 
@@ -75,7 +74,7 @@ export default function CountUp({
     // Update text content with formatted number on spring value change
     useEffect(() => {
         if (!springValue) return;
-
+        
         const unsubscribe = springValue.on("change", (latest: number) => {
             if (ref.current) {
                 const options = {
