@@ -1,19 +1,12 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getBlogPost, getBlogPosts } from '../../../../lib/blog';
-import dynamic from 'next/dynamic';
-
-// Dynamic import for ReactMarkdown (it's a component)
-const ReactMarkdown = dynamic(() => import('react-markdown'), {
-  loading: () => <div className="animate-pulse">Loading content...</div>
-});
-
-// Import plugins normally since they're not components
+import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 
 interface BlogPostPageProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{slug: string}>
 }
 
 export async function generateStaticParams() {
@@ -21,8 +14,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps) {
-  const resolvedParams = await params;
-  const post = getBlogPost(resolvedParams.slug);
+  const post = getBlogPost((await params).slug);
 
   if (!post) {
     return {
@@ -37,8 +29,7 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const resolvedParams = await params;
-  const post = getBlogPost(resolvedParams.slug);
+  const post = getBlogPost((await params).slug);
 
   if (!post) {
     notFound();
@@ -55,27 +46,27 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
       <header className="mb-8">
         <h1 className="text-[6vh] font-bold mb-4">{post.title}</h1>
-        <div className="flex text-center gap-2 items-center  text-sm text-gray-600 dark:text-gray-400">
+        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
           <span>{new Date(post.date).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
           })}</span>
-          <span className="mx-1">•</span>
-          {post.tags.length > 0 && (
-            <span className="flex flex-wrap gap-2">
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 rounded-full"
-                >
-                  {tag}
-                </span>
-              ))}
-            </span>
-          )}
+          <span className="mx-2">•</span>
+          <span>{post.author}</span>
         </div>
-
+        {post.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-4">
+            {post.tags.map((tag) => (
+              <span
+                key={tag}
+                className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 rounded-full"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
       </header>
 
       <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-code:bg-gray-100 dark:prose-code:bg-gray-800 prose-code:rounded prose-code:px-1">

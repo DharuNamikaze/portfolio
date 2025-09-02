@@ -1,23 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
+import { HiOutlineSparkles, HiSparkles } from "react-icons/hi2";
 import Link from "next/link";
 import ThemeSwitcher from './ThemeSwitcher';
 import { SparklesCore } from "./ui/sparkles";
-import dynamic from 'next/dynamic';
-
-// Dynamic imports for icons
-const HiOutlineSparkles = dynamic(() => import("react-icons/hi2").then(mod => ({ default: mod.HiOutlineSparkles })), {
-  loading: () => <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
-});
-
-const HiSparkles = dynamic(() => import("react-icons/hi2").then(mod => ({ default: mod.HiSparkles })), {
-  loading: () => <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
-});
 
 function randomColor() {
     let hex = "#";
     const range = "50b149c6d2707ef8a";
-    for (let i = 0; i < 6; i++) {     
+    for (let i = 0; i < 6; i++) {
         hex += range[Math.floor(Math.random() * 8)];
     }
     return hex;

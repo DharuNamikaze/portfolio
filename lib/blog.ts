@@ -6,6 +6,7 @@ export interface BlogPost {
   slug: string;
   title: string;
   date: string;
+  author: string;
   tags: string[];
   content: string;
   excerpt: string;
@@ -31,6 +32,7 @@ export function getBlogPosts(): BlogPost[] {
         slug,
         title: data.title || 'Untitled',
         date: data.date || new Date().toISOString(),
+        author: data.author || 'Anonymous',
         tags: data.tags || [],
         content,
         excerpt: content.slice(0, 200).replace(/\n/g, ' ') + '...',
@@ -55,6 +57,7 @@ export function getBlogPost(slug: string): BlogPost | null {
     slug,
     title: data.title || 'Untitled',
     date: data.date || new Date().toISOString(),
+    author: data.author || 'Anonymous',
     tags: data.tags || [],
     content,
     excerpt: content.slice(0, 200).replace(/\n/g, ' ') + '...',

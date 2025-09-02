@@ -1,5 +1,6 @@
 "use client"
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { gsap } from "gsap";
 
 interface MenuItemProps {
   link: string;
@@ -9,11 +10,6 @@ interface MenuItemProps {
 
 interface FlowingMenuProps {
   items?: MenuItemProps[];
-}
-
-interface GSAP {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  timeline: (options?: any) => any;
 }
 
 const FlowingMenu: React.FC<FlowingMenuProps> = ({ items = [] }) => {
@@ -32,22 +28,8 @@ const MenuItem: React.FC<MenuItemProps> = ({ link, text }) => {
   const itemRef = React.useRef<HTMLDivElement>(null);
   const marqueeRef = React.useRef<HTMLDivElement>(null);
   const marqueeInnerRef = React.useRef<HTMLDivElement>(null);
-  const [gsap, setGsap] = useState<GSAP | null>(null);
 
   const animationDefaults = { duration: 1.0, ease: "expo" };
-
-  // Dynamically load GSAP
-  useEffect(() => {
-    const loadGSAP = async () => {
-      try {
-        const gsapModule = await import("gsap");
-        setGsap(gsapModule.gsap);
-      } catch (error) {
-        console.error("Failed to load GSAP:", error);
-      }
-    };
-    loadGSAP();
-  }, []);
 
   const findClosestEdge = (
     mouseX: number,
@@ -62,7 +44,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ link, text }) => {
   };
 
   const handleMouseEnter = (ev: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current || !gsap)
+    if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current)
       return;
     const rect = itemRef.current.getBoundingClientRect();
     const edge = findClosestEdge(
@@ -79,7 +61,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ link, text }) => {
   };
 
   const handleMouseLeave = (ev: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current || !gsap)
+    if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current)
       return;
     const rect = itemRef.current.getBoundingClientRect();
     const edge = findClosestEdge(
@@ -89,7 +71,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ link, text }) => {
       rect.height
     );
 
-    const tl = gsap.timeline({ defaults: animationDefaults });
+    const tl = gsap.timeline({ defaults: animationDefaults }) as TimelineMax;
     tl.to(marqueeRef.current, { y: edge === "top" ? "-101%" : "101%" }).to(
       marqueeInnerRef.current,
       { y: edge === "top" ? "101%" : "-101%" }
@@ -109,17 +91,6 @@ const MenuItem: React.FC<MenuItemProps> = ({ link, text }) => {
     ));
   }, [text]);
 
-  // Show loading state while GSAP is loading
-  if (!gsap) {
-    return (
-      <div className="flex-1 relative overflow-hidden text-center shadow-[0_-1px_0_0_#fff]">
-        <div className="flex items-center justify-center h-full">
-          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div
       className="flex-1 relative overflow-hidden text-center shadow-[0_-1px_0_0_#fff]"
@@ -128,26 +99,22 @@ const MenuItem: React.FC<MenuItemProps> = ({ link, text }) => {
       <a
         className="flex items-center justify-center h-full relative cursor-pointer uppercase no-underline font-semibold dark:text-white text-[3vh] lg:text-[4vh] hover:text-white focus:text-white focus-visible:text-[#ffffff]"
         href={link}
+        target="_blank"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="relative w-full h-full flex items-center justify-center">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span>{text}</span>
-          </div>
-          <div
-            ref={marqueeRef}
-            className="absolute inset-0 flex items-center justify-center overflow-hidden"
-          >
-            <div
-              ref={marqueeInnerRef}
-              className="flex items-center justify-center whitespace-nowrap"
-            >
-              {repeatedMarqueeContent}
-            </div>
+        {text}
+      </a>
+      <div
+        className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none dark:bg-white bg-transparent text-white translate-y-[101%]"
+        ref={marqueeRef}
+      >
+        <div className="h-full w-[200%] flex" ref={marqueeInnerRef}>
+          <div className="flex items-center relative h-full w-[200%] will-change-transform animate-marquee">
+            {repeatedMarqueeContent}
           </div>
         </div>
-      </a>
+      </div>
     </div>
   );
 };

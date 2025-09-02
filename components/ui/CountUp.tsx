@@ -1,5 +1,6 @@
 "use client"
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useInView, useMotionValue, useSpring } from "framer-motion";
 
 interface CountUpProps {
     to: number;
@@ -12,15 +13,6 @@ interface CountUpProps {
     separator?: string;
     onStart?: () => void;
     onEnd?: () => void;
-}
-
-interface MotionHooks {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    useInView: (ref: React.RefObject<HTMLElement>, options?: any) => boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    useMotionValue: (initial: number) => any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    useSpring: (value: any, config: any) => any;
 }
 
 export default function CountUp({
@@ -36,59 +28,18 @@ export default function CountUp({
     onEnd,
 }: CountUpProps) {
     const ref = useRef<HTMLSpanElement>(null);
-    const [motionHooks, setMotionHooks] = useState<MotionHooks | null>(null);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [motionValue, setMotionValue] = useState<any>(null);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [springValue, setSpringValue] = useState<any>(null);
-    const [isInView, setIsInView] = useState(false);
+    const motionValue = useMotionValue(direction === "down" ? to : from);
 
-    // Dynamically load framer-motion
-    useEffect(() => {
-        const loadFramerMotion = async () => {
-            try {
-                const motionModule = await import("framer-motion");
-                const hooks: MotionHooks = {
-                    useInView: motionModule.useInView,
-                    useMotionValue: motionModule.useMotionValue,
-                    useSpring: motionModule.useSpring
-                };
-                setMotionHooks(hooks);
-                
-                // Initialize motion values after loading
-                const initialValue = direction === "down" ? to : from;
-                const mv = hooks.useMotionValue(initialValue);
-                setMotionValue(mv);
-                
-                // Calculate damping and stiffness based on duration
-                const damping = 20 + 40 * (1 / duration);
-                const stiffness = 100 * (1 / duration);
-                
-                const sv = hooks.useSpring(mv, { damping, stiffness });
-                setSpringValue(sv);
-            } catch (error) {
-                console.error("Failed to load framer-motion:", error);
-            }
-        };
-        loadFramerMotion();
-    }, [direction, from, to, duration]);
+    // Calculate damping and stiffness based on duration
+    const damping = 20 + 40 * (1 / duration); // Adjust this formula for finer control
+    const stiffness = 100 * (1 / duration);   // Adjust this formula for finer control
 
-    // Set up intersection observer for in-view detection
-    useEffect(() => {
-        if (!ref.current) return;
-        
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setIsInView(true);
-                }
-            },
-            { threshold: 0.1 }
-        );
-        
-        observer.observe(ref.current);
-        return () => observer.disconnect();
-    }, []);
+    const springValue = useSpring(motionValue, {
+        damping,
+        stiffness,
+    });
+
+    const isInView = useInView(ref, { once: true, margin: "0px" });
 
     // Set initial text content to the initial value based on direction
     useEffect(() => {
@@ -99,7 +50,7 @@ export default function CountUp({
 
     // Start the animation when in view and startWhen is true
     useEffect(() => {
-        if (isInView && startWhen && motionValue) {
+        if (isInView && startWhen) {
             if (typeof onStart === "function") {
                 onStart();
             }
@@ -123,9 +74,7 @@ export default function CountUp({
 
     // Update text content with formatted number on spring value change
     useEffect(() => {
-        if (!springValue) return;
-        
-        const unsubscribe = springValue.on("change", (latest: number) => {
+        const unsubscribe = springValue.on("change", (latest) => {
             if (ref.current) {
                 const options = {
                     useGrouping: !!separator,
@@ -145,15 +94,6 @@ export default function CountUp({
 
         return () => unsubscribe();
     }, [springValue, separator]);
-
-    // Show loading state while framer-motion is loading
-    if (!motionHooks || !motionValue || !springValue) {
-        return (
-            <span className={`${className}`} ref={ref}>
-                {direction === "down" ? to : from}
-            </span>
-        );
-    }
 
     return <span className={`${className}`} ref={ref} />;
 }

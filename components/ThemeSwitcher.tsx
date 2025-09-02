@@ -1,15 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import dynamic from 'next/dynamic';
-
-// Dynamic imports for icons
-const MdDarkMode = dynamic(() => import("react-icons/md").then(mod => ({ default: mod.MdDarkMode })), {
-  loading: () => <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
-});
-
-const MdLightMode = dynamic(() => import("react-icons/md").then(mod => ({ default: mod.MdLightMode })), {
-  loading: () => <div className="w-6 h-6 bg-gray-300 rounded animate-pulse" />
-});
+import { MdDarkMode, MdLightMode } from "react-icons/md";
 
 export default function ThemeSwitcher() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
@@ -29,7 +20,7 @@ export default function ThemeSwitcher() {
   };
 
   return (
-    <button type="submit" title="Theme" onClick={toggleTheme}>
+    <button onClick={toggleTheme}>
       {theme === "light" ? <MdDarkMode /> : <MdLightMode />}
     </button>
   );
