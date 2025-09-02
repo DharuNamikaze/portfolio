@@ -1,5 +1,5 @@
 "use client";
-import React, { useId, Suspense } from "react";
+import React, { useId, Suspense, useRef } from "react";
 import { useEffect, useState } from "react";
 import { cn } from "../../lib/utils";
 
@@ -13,8 +13,6 @@ interface LoadedComponents {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     div: React.ComponentType<any>;
   };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  AnimationHook: () => any;
 }
 
 type ParticlesProps = {
@@ -40,9 +38,14 @@ export const SparklesCore = (props: ParticlesProps) => {
     particleColor,
     particleDensity,
   } = props;
+  
+  // All hooks at the top level with consistent order
   const [init, setInit] = useState(false);
   const [loadedComponents, setLoadedComponents] = useState<LoadedComponents | null>(null);
   const generatedId = useId();
+  const containerRef = useRef<HTMLDivElement>(null);
+  // local visible state used for a CSS-based fade-in (keeps hooks stable)
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     // Dynamically load all heavy components
@@ -57,7 +60,6 @@ export const SparklesCore = (props: ParticlesProps) => {
         const components: LoadedComponents = {
           ParticlesComponent: particlesMod.Particles,
           MotionComponent: motionMod.motion,
-          AnimationHook: motionMod.useAnimation
         };
 
         setLoadedComponents(components);
@@ -80,7 +82,7 @@ export const SparklesCore = (props: ParticlesProps) => {
   // Early return if components aren't loaded yet
   if (!loadedComponents) {
     return (
-      <div className={cn("h-full w-full", className)}>
+      <div ref={containerRef} className={cn("h-full w-full", className)}>
         <div className="flex items-center justify-center h-full">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
@@ -88,30 +90,31 @@ export const SparklesCore = (props: ParticlesProps) => {
     );
   }
 
-  const { ParticlesComponent, MotionComponent, AnimationHook } = loadedComponents;
-
-  const controls = AnimationHook();
+  const { ParticlesComponent /*, MotionComponent */ } = loadedComponents;
 
   const particlesLoaded = async (container?: Container) => {
     if (container) {
-      controls.start({
-        opacity: 1,
-        transition: {
-          duration: 1,
-        },
-      });
+      // trigger CSS fade-in
+      setVisible(true);
     }
   };
   
   return (
     <Suspense fallback={
-      <div className={cn("h-full w-full", className)}>
+      <div ref={containerRef} className={cn("h-full w-full", className)}>
         <div className="flex items-center justify-center h-full">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
         </div>
       </div>
     }>
-      <MotionComponent.div animate={controls} className={cn("opacity-0", className)}>
+      <div
+        ref={containerRef}
+        className={cn(
+          // start hidden, then transition to visible when `visible` becomes true
+          visible ? "opacity-100 transition-opacity duration-700" : "opacity-0",
+          className
+        )}
+      >
         {init && (
           <ParticlesComponent
             id={id || generatedId}
@@ -239,7 +242,7 @@ export const SparklesCore = (props: ParticlesProps) => {
             }}
           />
         )}
-      </MotionComponent.div>
+  </div>
     </Suspense>
   );
 };
