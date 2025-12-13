@@ -1,0 +1,62 @@
+---
+// Theme Toggle Component
+---
+
+<button 
+  id="theme-toggle" 
+  class="hover:cursor-pointer transition-colors duration-200 rounded-4xl"
+  aria-label="Toggle dark mode"
+  title="Toggle theme"
+>
+  🌞
+</button>
+
+<script>
+  // This script runs after the component is loaded
+  const toggle = document.getElementById('theme-toggle');
+  const html = document.documentElement;
+  
+  if (toggle) {
+    // Check initial theme and set icon
+    function updateIcon() {
+      if (!toggle) return;
+      const isDark = html.classList.contains('dark');
+      toggle.textContent = isDark ? '🌙' : '🌞';
+    }
+    
+    // Set initial icon
+    updateIcon();
+    
+    // Add click handler
+    toggle.addEventListener('click', function() {
+      const isDark = html.classList.contains('dark');
+      
+      if (isDark) {
+        html.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        toggle.textContent = '🌞';
+        console.log('Switched to light mode');
+      } else {
+        html.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        toggle.textContent = '🌙';
+        console.log('Switched to dark mode');
+      }
+    });
+  }
+</script>
+
+<script is:inline>
+  // Initialize theme on page load (before anything renders)
+  (function() {
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const shouldBeDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+    
+    if (shouldBeDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  })();
+</script>
