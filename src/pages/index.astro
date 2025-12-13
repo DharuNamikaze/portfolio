@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 import { getCollection } from "astro:content";
 import "../../public/x.svg";
 // Get blog posts and sort by date
@@ -52,7 +53,7 @@ const projects = [
     <header class="mb-16">
         <div class="flex justify-between items-start mb-4 mt-5">
             <h1 class="text-3xl font-bold">Dharun R</h1>
-            <div class="flex gap-4">
+            <div class="flex gap-4 items-center">
                 {
                     Handles.map((handle) => (
                         <a
@@ -70,10 +71,11 @@ const projects = [
                         </a>
                     ))
                 }
+                <ThemeToggle />
             </div>
         </div>
         <p class="leading-relaxed">
-            I build 
+            I engineer systems with scalability and security in mind
         </p>
     </header>
 
