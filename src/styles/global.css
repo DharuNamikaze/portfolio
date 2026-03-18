@@ -1,8 +1,10 @@
 @import "tailwindcss";
+@variant dark (&:where(.dark, .dark *));
 
 /* Global styles for minimalistic portfolio */
-html, body { 
-  height: 100%; 
+html,
+body {
+  height: 100%;
   font-family: 'Inter', system-ui, sans-serif;
 }
 
@@ -37,17 +39,29 @@ body {
 .dark .theme-toggle:hover {
   background-color: #374151;
 }
+
 /* Override text colors for dark mode */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: inherit;
 }
 
-.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
   color: white;
 }
 
 .dark p {
-  color: #d1d5db; /* gray-300 */
+  color: #d1d5db;
+  /* gray-300 */
 }
 
 .dark a {
@@ -60,22 +74,26 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Section headings */
 .dark .section-heading {
-  color: #9ca3af; /* gray-400 */
+  color: #9ca3af;
+  /* gray-400 */
 }
 
 /* Project and blog descriptions */
 .dark .description {
-  color: #d1d5db; /* gray-300 */
+  color: #d1d5db;
+  /* gray-300 */
 }
 
 /* Dates and meta info */
 .dark .meta {
-  color: #9ca3af; /* gray-400 */
+  color: #9ca3af;
+  /* gray-400 */
 }
 
 /* Footer */
 .dark footer {
-  color: #9ca3af; /* gray-400 */
+  color: #9ca3af;
+  /* gray-400 */
 }
 
 /* Social media icons */

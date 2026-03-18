@@ -1,0 +1,91 @@
+---
+import ThemeToggle from "./ThemeToggle.astro";
+
+interface Props {
+  isBlog?: boolean;
+  postTitle?: string;
+  pubDate?: string | Date;
+}
+
+const { isBlog = false, postTitle = "", pubDate = "" } = Astro.props;
+
+const Handles = [
+  {
+    name: "Linkedin",
+    img: "linkedin.svg",
+    url: "https://www.linkedin.com/in/dharunn/",
+  },
+  { name: "X", img: "x.svg", url: "https://x.com/Dharu_Namikaze" },
+  {
+    name: "Github",
+    img: "github.svg",
+    url: "https://github.com/DharuNamikaze/",
+  },
+  { name: "Mail", img: "mail.svg", url: "mailto:dharunamikaze@gmail.com" },
+  { name: "Resume", img: "resume.svg", url: "/R_Dharun_CV.pdf" },
+];
+
+let formattedDate = "";
+if (pubDate) {
+  const d = typeof pubDate === "string" ? new Date(pubDate) : (pubDate as Date);
+  formattedDate = d.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+---
+
+<header class="mb-10">
+  <div class="flex justify-between items-start mb-4 mt-5">
+    <div>
+      {
+        (isBlog && postTitle) ? (
+          <div>
+            <h1 class="text-3xl max-sm:text-2xl font-bold">{postTitle}</h1>
+            {formattedDate && (
+              <time class="text-sm meta tabular-nums">{formattedDate}</time>
+            )}
+          </div>
+        ) : (
+          <h1 class="text-3xl max-sm:text-2xl font-bold">Dharun / தருண்</h1>
+        )
+      }
+    </div>
+    <div class="flex gap-4 items-center">
+      {
+        Handles.map((handle) => (
+          <a
+            href={handle.url}
+            title={handle.name}
+            class="social-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src={`/${handle.img}`} alt={handle.name} class="social-icon" />
+          </a>
+        ))
+      }
+      <ThemeToggle />
+    </div>
+  </div>
+  {
+    !isBlog && (
+      <p class="leading-relaxed">
+        Started coding by myself with web-basics, shifted to
+        <a href="https://react.dev/" target="_blank" rel="noopener noreferrer">react</a>-<a href="https://nodejs.org/en" target="_blank" rel="noopener noreferrer">express</a>, picked <a href="https://nextjs.org/" target="_blank" rel="noopener noreferrer">nextjs</a>,
+        then built <a href="https://qaweb.mymapit.in/chat/" target="_blank" rel="noopener noreferrer">AgentHub</a> for <a href="https://myanatomy.ai/" rel="noopener noreferrer">MyAnatomy Inc</a> (got scammed),  curiously made this Antigravity feature open-source to all IDEs and wrapped in npm package <a href="" target="_blank" rel="noopener noreferrer">Gravity</a>.
+        Created this for fun but acutally reached 20k+ page visits in 3 days checkout: <a href="http://deep-ml-trench.vercel.app" target="_blank" rel="noopener noreferrer">Deep-ML-Trench</a>, now developing the v2 with threejs   <a href="https://github.com/DharuNamikaze/TheMLTrench" target="_blank" rel="noopener noreferrer">Deep-ML-Space</a>.
+        <br/>
+        <br />
+        <code>&#123; core_interests: ["Math", "ML", "Fullstack"] &#125;</code>
+        <br />
+        Currently building
+        <a href="https://www.linuxfromscratch.org/" target="_blank" rel="noopener noreferrer">
+          linuxfromscratch
+        </a>
+        (my very own distro :D).
+      </p>
+    )
+  }
+</header>

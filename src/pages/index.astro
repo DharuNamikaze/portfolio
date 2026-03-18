@@ -1,175 +1,133 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import ThemeToggle from "../components/ThemeToggle.astro";
+import TechStack from "../components/TechStack.astro";
 import { getCollection } from "astro:content";
-import "../../public/x.svg";
 // Get blog posts and sort by date
 const posts = (await getCollection("blog")).sort(
-    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 
 // Define your projects here
-const Handles = [
-    {
-        name: "Linkedin",
-        img: "linkedin.svg",
-        url: "https://www.linkedin.com/in/dharunn/",
-    },
-    { name: "X", img: "x.svg", url: "https://x.com/Dharu_Namikaze" },
-    {
-        name: "Github",
-        img: "github.svg",
-        url: "https://github.com/DharuNamikaze/",
-    },
-    { name: "Mail", img: "mail.svg", url: "mailto:dharunamikaze@gmail.com" },
-     { name: "Resume", img: "resume.svg", url: "/Dharun_R_CV.pdf" },
-];
 const projects = [
-{
+  {
     name: "AgentHub",
+    stack: ["React", "Express", "MongoDB", "Pinecone", "OpenAI"],
     desc: "A platform for building and integrating agentic chatbots into SaaS products.",
-    url: "https://github.com/myanatomyforall/MyAnatomy-AI-Chat-Support",
-},
-{
-    name: "Deep-ML-Trench",
-    desc: "Explore the depth of machine learning concepts.",
-    url: "https://deep-ml-trench.vercel.app/",
-},
-{
-    name: "Paylog",
-    desc: "Automatically logs and organizes your online transactions for easy tracking.",
+    url: "https://github.com/DharuNamikaze/MyAnatomy-AI-Chat-Support",
+  },
+  {
+    name: "Deep-ML-Space",
+    stack: ["Astro", "Three"],
+    desc: "Explore the vastness of machine learning concepts.",
+    url: "https://deep-ml-space.vercel.app/",
+  },
+  {
+    name: "Gravity",
+    stack: ["Typescript", "MCP", "Npm"],
+    desc: "Open-source implementation to Google's Antigravity",
     url: "https://github.com/DharuNamikaze/Paylog.git",
-},
-{
+  },
+  {
     name: "Raptor3",
+    stack: ["Typescript", "Express", "MongoDB", "Pinecone", "Three"],
     desc: "3d-model build from scratch to experiment with low-level design and performance.",
     url: "https://github.com/DharuNamikaze/Raptor-3.git",
-},
-{
+  },
+  {
     name: "Convertify",
+    stack: ["Next", "FFMPEG", "WA"],
     desc: "Simple file converter; Limited Filetypes, Unlimited conversions.",
     url: "https://convertify-rho.vercel.app/",
-},
-
+  },
 ];
 ---
 
 <Layout title="Dharun R">
-    <!-- Header -->
-    <header class="mb-16">
-        <div class="flex justify-between items-start mb-4 mt-5">
-            <h1 class="text-3xl max-sm:text-2xl font-bold">Dharun R</h1>
-            <div class="flex gap-4 items-center">
-                {
-                    Handles.map((handle) => (
-                        <a
-                            href={handle.url}
-                            title={handle.name}
-                            class="social-link"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <img 
-                                src={`/${handle.img}`}
-                                alt={handle.name}
-                                class="social-icon"
-                            />
-                        </a>
-                    ))
-                }
-                <ThemeToggle />
+  <!-- Header is rendered from Layout/Header component -->
+
+  <!-- Projects Section -->
+  <section class="mb-16">
+    <h2
+      class="text-xs font-bold uppercase tracking-widest section-heading mb-6 flex justify-between"
+    >
+      Projects <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="icon icon-tabler icons-tabler-outline icon-tabler-category-2"
+        ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+          d="M14 4h6v6h-6z"></path><path d="M4 14h6v6h-6z"></path><path
+          d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path><path
+          d="M7 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"></path></svg
+      >
+    </h2>
+    <ul class="space-y-4">
+      {
+        projects.map((project) => (
+          <li class="flex flex-col sm:flex-row sm:items-baseline justify-between group">
+            <div class="flex flex-col gap-1">
+              <a
+                href={project.url}
+                class={`font-medium no-underline hover:underline w-fit`}
+              >
+                {project.name}
+              </a>
+              <TechStack stack={project.stack} />
             </div>
-        </div>
-        <p class="leading-relaxed">
-            I love to build cool stuff, from design to shipping everything.
-            <br>
-            Builds, breaks, fixes, repeats.
-            <br>
-            Builds systems, into metaphysics and writes sometimes.
-        </p>
-    </header>
+            <span class="text-sm description">{project.desc}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 
-    <!-- Projects Section -->
-    <section class="mb-16">
-        <h2
-            class="text-xs font-bold uppercase tracking-widest section-heading mb-6 flex justify-between"
-        >
-            Projects <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon icon-tabler icons-tabler-outline icon-tabler-category-2"
-                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
-                    d="M14 4h6v6h-6z"></path><path d="M4 14h6v6h-6z"
-                ></path><path d="M17 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"
-                ></path><path d="M7 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"
-                ></path></svg
+  <!-- Blog Section -->
+  <section>
+    <h2
+      class="text-xs font-bold uppercase tracking-widest section-heading mb-6 flex justify-between"
+    >
+      Writing <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="icon icon-tabler icons-tabler-outline icon-tabler-pencil"
+        ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+          d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"
+        ></path><path d="M13.5 6.5l4 4"></path></svg
+      >
+    </h2>
+    <ul class="space-y-4">
+      {
+        posts.map((post) => (
+          <li class="flex flex-col sm:flex-row sm:items-baseline justify-between">
+            <a
+              href={`/blog/${post.slug}`}
+              class="font-medium no-underline hover:underline"
             >
-        </h2>
-        <ul class="space-y-4">
-            {
-                projects.map((project) => (
-                    <li class="flex flex-col sm:flex-row sm:items-baseline justify-between group">
-                        <a
-                            href={project.url}
-                            class="font-medium no-underline hover:underline"
-                        >
-                            {project.name}
-                        </a>
-                        <span class="text-sm description">{project.desc}</span>
-                    </li>
-                ))
-            }
-        </ul>
-    </section>
-
-    <!-- Blog Section -->
-    <section>
-        <h2
-            class="text-xs font-bold uppercase tracking-widest section-heading mb-6 flex justify-between"
-        >
-            Writing <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon icon-tabler icons-tabler-outline icon-tabler-pencil"
-                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
-                    d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4"
-                ></path><path d="M13.5 6.5l4 4"></path></svg
-            >
-        </h2>
-        <ul class="space-y-4">
-            {
-                posts.map((post) => (
-                    <li class="flex flex-col sm:flex-row sm:items-baseline justify-between">
-                        <a
-                            href={`/blog/${post.slug}`}
-                            class="font-medium no-underline hover:underline"
-                        >
-                            {post.data.title}
-                        </a>
-                        <time class="text-sm meta tabular-nums">
-                            {post.data.pubDate.toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                            })}
-                        </time>
-                    </li>
-                ))
-            }
-        </ul>
-    </section>
+              {post.data.title}
+            </a>
+            <time class="text-sm meta tabular-nums">
+              {post.data.pubDate.toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </time>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 </Layout>

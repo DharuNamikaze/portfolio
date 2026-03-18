@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
 /* Base typography and spacing for minimalistic design */
 html {
   font-family: 'Inter', system-ui, sans-serif;
