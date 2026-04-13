@@ -4,6 +4,15 @@
 /* Global styles for minimalistic portfolio */
 html {
   scrollbar-gutter: stable;
+  scroll-behavior: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 html,
