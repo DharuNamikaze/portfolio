@@ -28,7 +28,7 @@ const postsData = posts.map((post) => ({
 
 <Layout title="Blog - Dharun R" isBlog={true}>
   <div class="-mt-6">
-    <h1 class="text-4xl font-bold mb-6">Blog Posts</h1>
+    <h1 class="text-4xl font-bold mb-8">Blog Posts</h1>
 
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
       <!-- Sidebar with Search and Tags -->
@@ -79,7 +79,7 @@ const postsData = posts.map((post) => ({
             postsData.map((post) => (
               <article
                 data-post-json={JSON.stringify(post)}
-                class="p-4 hover:opacity-60 transition-opacity cursor-pointer"
+                class="p-4 pb-6 border-b border-gray-200 dark:border-gray-800 hover:opacity-60 transition-opacity cursor-pointer last:border-b-0"
               >
                 <a href={`/blog/${post.slug}`} class="block group">
                   <h2 class="text-2xl font-bold mb-2">

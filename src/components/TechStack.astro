@@ -6,55 +6,60 @@ interface Props {
 const { stack } = Astro.props;
 
 const techIconMap: Record<string, { icon: string; color: string }> = {
-  React:      { icon: "react",                color: "61DAFB" },
-  Express:    { icon: "express",              color: "000000" },
-  MongoDB:    { icon: "mongodb",              color: "13AA52" },
-  OpenAI:     { icon: "openai",              color: "412991" },
-  Astro:      { icon: "astro",               color: "FF5D01" },
-  Three:      { icon: "threedotjs",          color: "000000" },
-  Typescript: { icon: "typescript",          color: "3178C6" },
-  MCP:        { icon: "modelcontextprotocol",color: "000000" },
-  Npm:        { icon: "npm",                 color: "CB3837" },
-  Next:       { icon: "nextdotjs",           color: "000000" },
-  FFMPEG:     { icon: "ffmpeg",              color: "007808" },
-  WA:         { icon: "webassembly",         color: "654FF0" },
-  Python:     { icon: "python",              color: "3776AB" },
-  Node:       { icon: "nodedotjs",           color: "339933" },
-  AWS:        { icon: "amazonaws",           color: "FF9900" },
-  Docker:     { icon: "docker",              color: "2496ED" },
-  Medusa:     { icon: "medusa",              color: "000000" },
+  React: { icon: "react", color: "61DAFB" },
+  Express: { icon: "express", color: "000000" },
+  MongoDB: { icon: "mongodb", color: "13AA52" },
+  Astro: { icon: "astro", color: "FF5D01" },
+  Three: { icon: "threedotjs", color: "000000" },
+  Typescript: { icon: "typescript", color: "3178C6" },
+  MCP: { icon: "modelcontextprotocol", color: "000000" },
+  Npm: { icon: "npm", color: "CB3837" },
+  Next: { icon: "nextdotjs", color: "000000" },
+  FFMPEG: { icon: "ffmpeg", color: "007808" },
+  WA: { icon: "webassembly", color: "654FF0" },
+  Python: { icon: "python", color: "3776AB" },
+  Node: { icon: "nodedotjs", color: "339933" },
+  AWS: { icon: "amazonaws", color: "FF9900" },
+  Docker: { icon: "docker", color: "2496ED" },
+  Medusa: { icon: "medusa", color: "000000" },
+  Razorpay: { icon: "razorpay", color: "61DAFB" },
+  Namecheap: { icon: "namecheap", color: "FF5D01" },
   // Pinecone removed — no simple-icons entry
 };
 
-const stackIcons = stack.slice(0, 4);
+const stackIcons = stack;
 ---
 
 <div class="tech-stack-container">
-  <div class="flex gap-2 items-center max-h-0 overflow-hidden group-hover:max-h-20 transition-all duration-500 ease-in-out">
-    {stackIcons.map((tech) => {
-      const techData = techIconMap[tech];
+  <div
+    class="flex gap-2 items-center max-h-0 overflow-hidden group-hover:max-h-20 transition-all duration-500 ease-in-out"
+  >
+    {
+      stackIcons.map((tech) => {
+        const techData = techIconMap[tech];
 
-      if (!techData) {
-        // Text badge fallback for icons not in simple-icons
+        if (!techData) {
+          // Text badge fallback for icons not in simple-icons
+          return (
+            <span
+              title={tech}
+              class="text-[10px] font-mono px-1 py-0.5 rounded border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 leading-none mt-1"
+            >
+              {tech}
+            </span>
+          );
+        }
+
+        const needsInvert = techData.color === "000000";
         return (
-          <span
+          <img
+            src={`https://cdn.simpleicons.org/${techData.icon}/${techData.color}`}
+            alt={tech}
             title={tech}
-            class="text-[10px] font-mono px-1 py-0.5 rounded border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 leading-none mt-1"
-          >
-            {tech}
-          </span>
+            class={`w-5 h-5 mt-1 drop-shadow-sm ${needsInvert ? "dark:invert" : ""}`}
+          />
         );
-      }
-
-      const needsInvert = techData.color === "000000";
-      return (
-        <img
-          src={`https://cdn.simpleicons.org/${techData.icon}/${techData.color}`}
-          alt={tech}
-          title={tech}
-          class={`w-5 h-5 mt-1 drop-shadow-sm ${needsInvert ? "dark:invert" : ""}`}
-        />
-      );
-    })}
+      })
+    }
   </div>
 </div>

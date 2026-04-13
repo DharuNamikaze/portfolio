@@ -1,49 +1,223 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import TechStack from "../components/TechStack.astro";
 
 // Define your freelance projects here
 const freelanceProjects = [
   {
     name: "Mithilla - Ecommerce",
-    stack: [],
+    stack: ["React", "Next.js", "Tailwind CSS", "Node.js"],
     desc: "Traditional clothing brand ecommerce platform.",
     url: "https://mithilla.vercel.app/",
   },
 ];
+
+// Extract all unique stack items
+const allStack = Array.from(
+  new Set(freelanceProjects.flatMap((project) => project.stack || [])),
+).sort();
+
+// Convert projects data for client-side filtering
+const projectsData = freelanceProjects.map((project) => ({
+  name: project.name,
+  desc: project.desc,
+  url: project.url,
+  stack: project.stack || [],
+}));
 ---
 
 <Layout title="Freelance Projects - Dharun R" isBlog={true}>
   <div class="-mt-6">
     <h1 class="text-4xl font-bold mb-8">Freelance Projects</h1>
 
-    <ul class="space-y-6">
-      {
-        freelanceProjects.map((project) => (
-          <li class="flex flex-col gap-2 border-b pb-6 last:border-b-0">
-            <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
-              <div class="flex flex-col gap-2">
-                <a
-                  href={project.url}
-                  class={`text-xl font-medium no-underline hover:underline w-fit ${
-                    project.url ? "" : "opacity-50 cursor-default"
-                  }`}
-                  target={project.url ? "_blank" : ""}
-                  rel={project.url ? "noopener noreferrer" : ""}
-                >
-                  {project.name}
-                </a>
-                {project.stack && project.stack.length > 0 && (
-                  <TechStack stack={project.stack} />
-                )}
-              </div>
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <!-- Sidebar with Search and Tags -->
+      <aside class="lg:col-span-1">
+        <!-- Search Bar -->
+        <div class="sticky top-4">
+          <input
+            id="search-input"
+            type="text"
+            placeholder="Search projects..."
+            class="w-full px-2 py-1 mb-6 focus:outline-none"
+          />
+
+          <!-- Filter -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Filter</h3>
+            <div class="space-y-2">
+              <button
+                data-stack="all"
+                class="block w-full text-left px-3 py-2 rounded-lg text-white text-sm font-medium hover:opacity-60 transition-opacity cursor-pointer"
+              >
+                All Projects ({freelanceProjects.length})
+              </button>
+              {
+                allStack.map((stack) => {
+                  const count = freelanceProjects.filter((p) =>
+                    (p.stack || []).includes(stack),
+                  ).length;
+                  return (
+                    <button
+                      data-stack={stack}
+                      class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 text-sm hover:opacity-60 transition-opacity cursor-pointer"
+                    >
+                      {stack} ({count})
+                    </button>
+                  );
+                })
+              }
             </div>
-            {project.desc && (
-              <p class="text-sm description leading-relaxed">{project.desc}</p>
-            )}
-          </li>
-        ))
-      }
-    </ul>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Projects -->
+      <main class="lg:col-span-3">
+        <div id="projects-container" class="space-y-6">
+          {
+            projectsData.map((project) => (
+              <article
+                data-project-json={JSON.stringify(project)}
+                class="p-4 hover:opacity-60 transition-opacity cursor-pointer"
+              >
+                {project.url ? (
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="block group"
+                  >
+                    <h2 class="text-2xl font-bold mb-2">{project.name}</h2>
+                  </a>
+                ) : (
+                  <h2 class="text-2xl font-bold mb-2 opacity-50">
+                    {project.name}
+                  </h2>
+                )}
+                {project.desc && (
+                  <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    {project.desc}
+                  </p>
+                )}
+                {project.stack && project.stack.length > 0 && (
+                  <div class="flex flex-wrap gap-2">
+                    {project.stack.map((tech) => (
+                      <button
+                        data-stack-link={tech}
+                        class="px-2 py-1 text-xs text-gray-600 dark:text-gray-400 rounded hover:opacity-60 transition-opacity cursor-pointer"
+                      >
+                        #{tech}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </article>
+            ))
+          }
+        </div>
+        <div
+          id="no-results"
+          class="text-center py-12 text-gray-500 dark:text-gray-400 hidden"
+        >
+          <p class="text-lg">
+            No projects found matching your criteria.
+          </p>
+        </div>
+      </main>
+    </div>
   </div>
-</Layout>
+
+  <script>
+    const searchInput = document.getElementById(
+      "search-input",
+    ) as HTMLInputElement;
+    const stackButtons = document.querySelectorAll(
+      "[data-stack]",
+    ) as NodeListOf<HTMLButtonElement>;
+    const stackLinks = document.querySelectorAll(
+      "[data-stack-link]",
+    ) as NodeListOf<HTMLButtonElement>;
+    const projectsContainer = document.getElementById(
+      "projects-container",
+    ) as HTMLElement;
+    const noResults = document.getElementById("no-results") as HTMLElement;
+
+    let currentStack = "all";
+    let searchQuery = "";
+
+    function parseProjectData(article: Element) {
+      const jsonElement = article.getAttribute("data-project-json");
+      if (jsonElement) {
+        return JSON.parse(jsonElement);
+      }
+      return null;
+    }
+
+    function filterProjects() {
+      const articles = Array.from(
+        projectsContainer.querySelectorAll("article"),
+      ) as HTMLElement[];
+      let visibleCount = 0;
+
+      articles.forEach((article) => {
+        const project = parseProjectData(article);
+        if (!project) return;
+
+        const matchesSearch =
+          project.name.toLowerCase().includes(searchQuery) ||
+          project.desc.toLowerCase().includes(searchQuery);
+        const matchesStack =
+          currentStack === "all" ||
+          (project.stack && project.stack.includes(currentStack));
+
+        const shouldShow = matchesSearch && matchesStack;
+
+        if (shouldShow) {
+          article.classList.remove("hidden");
+          visibleCount++;
+        } else {
+          article.classList.add("hidden");
+        }
+      });
+
+      noResults.classList.toggle("hidden", visibleCount > 0);
+      updateStackButtonStyles();
+    }
+
+    function updateStackButtonStyles() {
+      stackButtons.forEach((btn) => {
+        if (btn.getAttribute("data-stack") === currentStack) {
+          btn.classList.add("text-white", "font-medium");
+          btn.classList.remove("text-gray-600", "dark:text-gray-400");
+        } else {
+          btn.classList.remove("text-white", "font-medium");
+          btn.classList.add("text-gray-600", "dark:text-gray-400");
+        }
+      });
+    }
+
+    searchInput.addEventListener("input", (e) => {
+      searchQuery = (e.target as HTMLInputElement).value.toLowerCase();
+      filterProjects();
+    });
+
+    stackButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        currentStack = btn.getAttribute("data-stack") || "all";
+        filterProjects();
+      });
+    });
+
+    stackLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        const stack = link.getAttribute("data-stack-link");
+        if (stack) {
+          currentStack = stack;
+          filterProjects();
+        }
+      });
+    });
+
+    // Initial style update
+    updateStackButtonStyles();
+  </script>
