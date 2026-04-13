@@ -37,44 +37,48 @@ if (pubDate) {
 ---
 
 <header class="mb-10">
-  <div class="flex justify-between items-start mb-4 mt-5">
-    <div>
-      {
-        isBlog && postTitle ? (
-          <div>
-            <h1 class="text-3xl max-sm:text-2xl font-bold">{postTitle}</h1>
-            {formattedDate && (
-              <time class="text-sm meta tabular-nums">{formattedDate}</time>
-            )}
-          </div>
-        ) : (
-          <div>
+  <div class="flex flex-col gap-3 mb-4 mt-5">
+    <div class="flex justify-between items-start">
+      <div>
+        {
+          isBlog && postTitle ? (
+            <div>
+              <h1 class="text-3xl max-sm:text-2xl font-bold">{postTitle}</h1>
+              {formattedDate && (
+                <time class="text-sm meta tabular-nums">{formattedDate}</time>
+              )}
+            </div>
+          ) : (
             <h1 class="text-2xl max-sm:text-xl font-bold">Dharun / தருண்</h1>
-            <nav class="mt-4 flex gap-8 text-sm border-t pt-3 border-gray-200 dark:border-gray-800">
-              <a href="/" class="nav-link">Home</a>
-              <a href="/freelance" class="nav-link">Freelance Projects</a>
-              <a href="/blog" class="nav-link">Blog</a>
-            </nav>
-          </div>
-        )
-      }
+          )
+        }
+      </div>
+      <div class="flex gap-3 items-center flex-wrap justify-end">
+        {
+          Handles.map((handle) => (
+            <a
+              href={handle.url}
+              title={handle.name}
+              class="social-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src={`/${handle.img}`} alt={handle.name} class="social-icon" loading="lazy" />
+            </a>
+          ))
+        }
+        <ThemeToggle />
+      </div>
     </div>
-    <div class="flex gap-4 items-center">
-      {
-        Handles.map((handle) => (
-          <a
-            href={handle.url}
-            title={handle.name}
-            class="social-link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img src={`/${handle.img}`} alt={handle.name} class="social-icon" loading="lazy" />
-          </a>
-        ))
-      }
-      <ThemeToggle />
-    </div>
+    {
+      !isBlog && (
+        <nav class="flex gap-6 text-sm border-t pt-3 border-gray-200 dark:border-gray-800 flex-wrap">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/freelance" class="nav-link">Freelance</a>
+          <a href="/blog" class="nav-link">Blog</a>
+        </nav>
+      )
+    }
   </div>
   {
     !isBlog && (
