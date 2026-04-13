@@ -40,7 +40,7 @@ if (pubDate) {
   <div class="flex justify-between items-start mb-4 mt-5">
     <div>
       {
-        (isBlog && postTitle) ? (
+        isBlog && postTitle ? (
           <div>
             <h1 class="text-3xl max-sm:text-2xl font-bold">{postTitle}</h1>
             {formattedDate && (
@@ -48,7 +48,14 @@ if (pubDate) {
             )}
           </div>
         ) : (
-          <h1 class="text-3xl max-sm:text-2xl font-bold">Dharun / தருண்</h1>
+          <div>
+            <h1 class="text-2xl max-sm:text-xl font-bold">Dharun / தருண்</h1>
+            <nav class="mt-4 flex gap-8 text-sm border-t pt-3 border-gray-200 dark:border-gray-800">
+              <a href="/" class="nav-link">Home</a>
+              <a href="/freelance" class="nav-link">Freelance Projects</a>
+              <a href="/blog" class="nav-link">Blog</a>
+            </nav>
+          </div>
         )
       }
     </div>
@@ -73,15 +80,66 @@ if (pubDate) {
     !isBlog && (
       <p class="leading-relaxed">
         Started coding by myself with web-basics, shifted to
-        <a href="https://react.dev/" target="_blank" rel="noopener noreferrer">react</a>-<a href="https://nodejs.org/en" target="_blank" rel="noopener noreferrer">express</a>, picked <a href="https://nextjs.org/" target="_blank" rel="noopener noreferrer">nextjs</a>,
-        then built <a href="https://qaweb.mymapit.in/chat/" target="_blank" rel="noopener noreferrer">AgentHub</a> for <a href="https://myanatomy.ai/" rel="noopener noreferrer">MyAnatomy Inc</a> (got scammed),  curiously made this Antigravity feature open-source to all IDEs and wrapped in npm package <a href="" target="_blank" rel="noopener noreferrer">Gravity</a>.
-        Created this for fun but acutally reached 20k+ page visits in 3 days checkout: <a href="http://deep-ml-trench.vercel.app" target="_blank" rel="noopener noreferrer">Deep-ML-Trench</a>, now developing the v2 with threejs   <a href="https://github.com/DharuNamikaze/TheMLTrench" target="_blank" rel="noopener noreferrer">Deep-ML-Space</a>.
-        <br/>
+        <a href="https://react.dev/" target="_blank" rel="noopener noreferrer">
+          react
+        </a>
+        -
+        <a
+          href="https://nodejs.org/en"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          express
+        </a>
+        , picked{" "}
+        <a href="https://nextjs.org/" target="_blank" rel="noopener noreferrer">
+          nextjs
+        </a>
+        , then built{" "}
+        <a
+          href="https://qaweb.mymapit.in/chat/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          AgentHub
+        </a>{" "}
+        for{" "}
+        <a href="https://myanatomy.ai/" rel="noopener noreferrer">
+          MyAnatomy Inc
+        </a>{" "}
+        (got scammed), curiously made this Antigravity feature open-source to
+        all IDEs and wrapped in npm package{" "}
+        <a href="" target="_blank" rel="noopener noreferrer">
+          Gravity
+        </a>
+        . Created this for fun but acutally reached 20k+ page visits in 3 days
+        checkout:{" "}
+        <a
+          href="http://deep-ml-trench.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Deep-ML-Trench
+        </a>
+        , now developing the v2 with threejs{" "}
+        <a
+          href="https://github.com/DharuNamikaze/TheMLTrench"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Deep-ML-Space
+        </a>
+        .
+        <br />
         <br />
         <code>&#123; core_interests: ["Math", "ML", "Fullstack"] &#125;</code>
         <br />
         Currently building
-        <a href="https://www.linuxfromscratch.org/" target="_blank" rel="noopener noreferrer">
+        <a
+          href="https://www.linuxfromscratch.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           linuxfromscratch
         </a>
         (my very own distro :D).

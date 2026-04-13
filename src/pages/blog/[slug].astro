@@ -16,15 +16,9 @@ const { Content } = await post.render();
 ---
 
 <Layout title="Dharun R" isBlog={true}>
-  <article>
-    <nav class="">
-      <a href="/" class="font-medium no-underline hover:underline text-sm">
-        ← Back
-      </a>
-    </nav>
-
+  <article class="-mt-6">
     <div class="prose dark:prose-invert max-w-none">
-      <h1 class="text-2xl font-bold mb-2">{post.data.title}</h1>
+      <h1 class="text-5xl font-bold mb-2">{post.data.title}</h1>
       <p class="text-neutral-500 text-sm mb-8">
         {
           post.data.pubDate.toLocaleDateString("en-US", {
@@ -34,6 +28,15 @@ const { Content } = await post.render();
           })
         }
       </p>
+      {post.data.tags && post.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mb-6">
+          {post.data.tags.map((tag) => (
+            <button data-tag-link={tag} class="px-3 py-1 text-xs text-gray-600 dark:text-gray-400 rounded hover:opacity-60 transition-opacity cursor-pointer">
+              #{tag}
+            </button>
+          ))}
+        </div>
+      )}
       <Content />
     </div>
 
@@ -113,3 +116,17 @@ const { Content } = await post.render();
     border-left-color: #4b5563;
   }
 </style>
+
+<script>
+  const tagLinks = document.querySelectorAll('[data-tag-link]') as NodeListOf<HTMLButtonElement>;
+  
+  tagLinks.forEach((button) => {
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      const tag = button.getAttribute('data-tag-link');
+      if (tag) {
+        window.location.href = `/blog?tag=${encodeURIComponent(tag)}`;
+      }
+    });
+  });
+</script>

@@ -40,6 +40,17 @@ const projects = [
     url: "https://convertify-rho.vercel.app/",
   },
 ];
+
+// Define your freelance projects here
+const freelanceProjects = [
+  {
+    name: "Mithilla - Ecommerce",
+    stack: ["Next","Medusa"],
+    desc: "Traditional clothing brand ecommerce platform.",
+    url: "https://mithilla.vercel.app/",
+  },
+];
+
 ---
 
 <Layout title="Dharun R">
@@ -56,7 +67,7 @@ const projects = [
         height="20"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="currentColor"
+        stroke="#4f46e5"
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"
@@ -87,6 +98,47 @@ const projects = [
     </ul>
   </section>
 
+  <!-- Freelance Projects Section -->
+  <section class="mb-16">
+    <h2
+      class="text-xs font-bold uppercase tracking-widest section-heading mb-6 flex justify-between"
+    >
+      Freelance Projects <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#059669"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="icon icon-tabler icons-tabler-outline icon-tabler-briefcase"
+        ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+          d="M12 3h-8a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-8"
+        ></path><path d="M12 7v4"></path><path d="M9 11h6"></path></svg
+      >
+    </h2>
+    <ul class="space-y-4">
+      {
+        freelanceProjects.map((project) => (
+          <li class="flex flex-col sm:flex-row sm:items-baseline justify-between group">
+            <div class="flex flex-col gap-1">
+              <a
+                href={project.url}
+                class={`font-medium no-underline hover:underline w-fit`}
+              >
+                {project.name}
+              </a>
+              <TechStack stack={project.stack} />
+            </div>
+            <span class="text-sm description">{project.desc}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
   <!-- Blog Section -->
   <section>
     <h2
@@ -98,7 +150,7 @@ const projects = [
         height="20"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="currentColor"
+        stroke="#666"
         stroke-width="2"
         stroke-linecap="round"
         stroke-linejoin="round"

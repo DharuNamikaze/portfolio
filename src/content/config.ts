@@ -11,6 +11,7 @@ const blog = defineCollection({
 			const [day, month, year] = str.split('-');
 			return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
 		}),
+		tags: z.array(z.string()).optional().default([]),
 	}),
 });
 

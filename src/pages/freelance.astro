@@ -1,0 +1,49 @@
+---
+import Layout from "../layouts/Layout.astro";
+import TechStack from "../components/TechStack.astro";
+
+// Define your freelance projects here
+const freelanceProjects = [
+  {
+    name: "Mithilla - Ecommerce",
+    stack: [],
+    desc: "Traditional clothing brand ecommerce platform.",
+    url: "https://mithilla.vercel.app/",
+  },
+];
+---
+
+<Layout title="Freelance Projects - Dharun R" isBlog={true}>
+  <div class="-mt-6">
+    <h1 class="text-4xl font-bold mb-8">Freelance Projects</h1>
+
+    <ul class="space-y-6">
+      {
+        freelanceProjects.map((project) => (
+          <li class="flex flex-col gap-2 border-b pb-6 last:border-b-0">
+            <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4">
+              <div class="flex flex-col gap-2">
+                <a
+                  href={project.url}
+                  class={`text-xl font-medium no-underline hover:underline w-fit ${
+                    project.url ? "" : "opacity-50 cursor-default"
+                  }`}
+                  target={project.url ? "_blank" : ""}
+                  rel={project.url ? "noopener noreferrer" : ""}
+                >
+                  {project.name}
+                </a>
+                {project.stack && project.stack.length > 0 && (
+                  <TechStack stack={project.stack} />
+                )}
+              </div>
+            </div>
+            {project.desc && (
+              <p class="text-sm description leading-relaxed">{project.desc}</p>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</Layout>

@@ -2,6 +2,10 @@
 @variant dark (&:where(.dark, .dark *));
 
 /* Global styles for minimalistic portfolio */
+html {
+  scrollbar-gutter: stable;
+}
+
 html,
 body {
   height: 100%;
@@ -23,6 +27,35 @@ body {
 /* Dark mode specific styles */
 .dark {
   color-scheme: dark;
+}
+
+/* Navigation link styles */
+.nav-link {
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: currentColor;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #666;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.dark .nav-link:hover {
+  color: #aaa;
 }
 
 /* Theme toggle button styles */

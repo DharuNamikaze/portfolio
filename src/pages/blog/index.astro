@@ -1,0 +1,210 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import BlogFilterClient from "../../components/BlogFilterClient.astro";
+
+// Get all blog posts sorted by date (latest first)
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+// Extract all unique tags
+const allTags = Array.from(
+  new Set(posts.flatMap((post) => post.data.tags || [])),
+).sort();
+
+// Pass data as JSON to client component
+const postsData = posts.map((post) => ({
+  slug: post.slug,
+  title: post.data.title,
+  pubDate: post.data.pubDate.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }),
+  tags: post.data.tags || [],
+}));
+---
+
+<Layout title="Blog - Dharun R" isBlog={true}>
+  <div class="-mt-6">
+    <h1 class="text-4xl font-bold mb-6">Blog Posts</h1>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <!-- Sidebar with Search and Tags -->
+      <aside class="lg:col-span-1">
+        <!-- Search Bar -->
+        <div class="sticky top-4">
+          <input
+            id="search-input"
+            type="text"
+            placeholder="Search posts..."
+            class="w-full px-2 py-1 mb-6 focus:outline-none"
+          />
+
+          <!-- Filter -->
+          <div>
+            <h3 class="text-lg font-semibold mb-4">Filter</h3>
+            <div class="space-y-2">
+              <button
+                data-tag="all"
+                class="block w-full text-left px-3 py-2 rounded-lg text-white text-sm font-medium hover:opacity-60 transition-opacity cursor-pointer"
+              >
+                All Posts ({posts.length})
+              </button>
+              {
+                allTags.map((tag) => {
+                  const count = posts.filter((p) =>
+                    (p.data.tags || []).includes(tag),
+                  ).length;
+                  return (
+                    <button
+                      data-tag={tag}
+                      class="block w-full text-left px-3 py-2 rounded-lg text-gray-600 dark:text-gray-400 text-sm hover:opacity-60 transition-opacity cursor-pointer"
+                    >
+                      {tag} ({count})
+                    </button>
+                  );
+                })
+              }
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Blog Posts -->
+      <main class="lg:col-span-3">
+        <div id="posts-container" class="space-y-6">
+          {
+            postsData.map((post) => (
+              <article
+                data-post-json={JSON.stringify(post)}
+                class="p-4 hover:opacity-60 transition-opacity cursor-pointer"
+              >
+                <a href={`/blog/${post.slug}`} class="block group">
+                  <h2 class="text-2xl font-bold mb-2">
+                    {post.title}
+                  </h2>
+                </a>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                  {post.pubDate}
+                </p>
+                <div class="flex flex-wrap gap-2">
+                  {post.tags.map((tag) => (
+                    <button
+                      data-tag-link={tag}
+                      class="px-2 py-1 text-xs text-gray-600 dark:text-gray-400 rounded hover:opacity-60 transition-opacity cursor-pointer"
+                    >
+                      #{tag}
+                    </button>
+                  ))}
+                </div>
+              </article>
+            ))
+          }
+        </div>
+        <div
+          id="no-results"
+          class="text-center py-12 text-gray-500 dark:text-gray-400 hidden"
+        >
+          <p class="text-lg">No posts found matching your criteria.</p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById(
+      "search-input",
+    ) as HTMLInputElement;
+    const tagButtons = document.querySelectorAll(
+      "[data-tag]",
+    ) as NodeListOf<HTMLButtonElement>;
+    const tagLinks = document.querySelectorAll(
+      "[data-tag-link]",
+    ) as NodeListOf<HTMLButtonElement>;
+    const postsContainer = document.getElementById(
+      "posts-container",
+    ) as HTMLElement;
+    const noResults = document.getElementById("no-results") as HTMLElement;
+
+    let currentTag = "all";
+    let searchQuery = "";
+
+    function parsePostData(article: Element) {
+      const jsonElement = article.getAttribute("data-post-json");
+      if (jsonElement) {
+        return JSON.parse(jsonElement);
+      }
+      return null;
+    }
+
+    function filterPosts() {
+      const articles = Array.from(
+        postsContainer.querySelectorAll("article"),
+      ) as HTMLElement[];
+      let visibleCount = 0;
+
+      articles.forEach((article) => {
+        const post = parsePostData(article);
+        if (!post) return;
+
+        const matchesSearch =
+          searchQuery === "" ||
+          post.title.toLowerCase().includes(searchQuery.toLowerCase());
+
+        const matchesTag =
+          currentTag === "all" || (post.tags && post.tags.includes(currentTag));
+
+        const isVisible = matchesSearch && matchesTag;
+        article.style.display = isVisible ? "block" : "none";
+
+        if (isVisible) visibleCount++;
+      });
+
+      noResults.classList.toggle("hidden", visibleCount > 0);
+    }
+
+    function updateTagButtons() {
+      tagButtons.forEach((button) => {
+        const tag = button.getAttribute("data-tag");
+        if (tag === currentTag) {
+          button.classList.add("text-white");
+          button.classList.remove("text-gray-600", "dark:text-gray-400");
+        } else {
+          button.classList.remove("text-white");
+          button.classList.add("text-gray-600", "dark:text-gray-400");
+        }
+      });
+    }
+
+    searchInput.addEventListener("input", (e) => {
+      searchQuery = (e.target as HTMLInputElement).value;
+      filterPosts();
+    });
+
+    tagButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        currentTag = button.getAttribute("data-tag") || "all";
+        updateTagButtons();
+        filterPosts();
+      });
+    });
+
+    tagLinks.forEach((button) => {
+      button.addEventListener("click", (e) => {
+        e.preventDefault();
+        const tag = button.getAttribute("data-tag-link");
+        if (tag) {
+          currentTag = tag;
+          updateTagButtons();
+          filterPosts();
+          // Scroll to sidebar for visual feedback
+          document
+            .querySelector("aside")
+            ?.scrollIntoView({ behavior: "smooth" });
+        }
+      });
+    });
+  </script>
+</Layout>
