@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
@@ -9,7 +9,14 @@ export default defineConfig({
     service: {
       entrypoint: 'astro/assets/services/sharp',
     },
-    domains: ['cdn.simpleicons.org'],
+  },
+  experimental: {
+    fonts: [{
+      provider: fontProviders.google(),
+      name: "Inter",
+      cssVariable: "--font-inter",
+      weights: ["400", "500", "600", "700"],
+    }]
   },
   vite: {
     plugins: [tailwindcss()]

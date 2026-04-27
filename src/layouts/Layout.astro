@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Analytics from '@vercel/analytics/astro';
 import Header from '../components/Header.astro';
+import { Font } from 'astro:assets';
 
 interface Props {
 	title: string;
@@ -21,10 +22,7 @@ const { title, isBlog = false, postTitle = '', pubDate = '' } = Astro.props;
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="color-scheme" content="light dark" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link rel="preconnect" href="https://cdn.simpleicons.org" />
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+		<Font cssVariable="--font-inter" preload />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>	

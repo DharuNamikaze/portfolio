@@ -35,12 +35,10 @@
         html.classList.remove('dark');
         localStorage.setItem('theme', 'light');
         toggle.textContent = '🌞';
-        console.log('Switched to light mode');
       } else {
         html.classList.add('dark');
         localStorage.setItem('theme', 'dark');
         toggle.textContent = '🌙';
-        console.log('Switched to dark mode');
       }
     });
   }

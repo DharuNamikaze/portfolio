@@ -1,7 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
-import BlogFilterClient from "../../components/BlogFilterClient.astro";
 
 // Get all blog posts sorted by date (latest first)
 const posts = (await getCollection("blog")).sort(
@@ -206,5 +205,14 @@ const postsData = posts.map((post) => ({
         }
       });
     });
+
+    // Read tag from URL on load (e.g. navigating from a blog post tag click)
+    const params = new URLSearchParams(window.location.search);
+    const tagFromUrl = params.get("tag");
+    if (tagFromUrl) {
+      currentTag = tagFromUrl;
+    }
+    updateTagButtons();
+    filterPosts();
   </script>
 </Layout>

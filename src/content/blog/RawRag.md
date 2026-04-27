@@ -1,7 +1,7 @@
 ---
 title: "RawRAG - RAG implementation from scratch"
 description: "Why less is more..."
-pubDate: 28-03-2026
+pubDate: "28-03-2026"
 tags: ["RAG", "FromScratch", "Implementation"]
 ---
 
