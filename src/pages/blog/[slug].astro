@@ -15,10 +15,17 @@ const { post } = Astro.props;
 const { Content } = await post.render();
 ---
 
-<Layout title="Dharun R" isBlog={true}>
+<Layout
+  title={post.data.title}
+  isBlog={true}
+  postTitle={post.data.title}
+  pubDate={post.data.pubDate}
+  description={post.data.description}
+  tags={post.data.tags}
+>
   <article class="-mt-6">
     <div class="prose dark:prose-invert max-w-none">
-      <h1 class="text-5xl font-bold mb-2">{post.data.title}</h1>
+      <h1 class="text-3xl sm:text-5xl font-bold mb-2">{post.data.title}</h1>
       <p class="text-neutral-500 text-sm mb-8">
         {
           post.data.pubDate.toLocaleDateString("en-US", {
@@ -82,26 +89,59 @@ const { Content } = await post.render();
   }
 
   :global(.prose code) {
-    background-color: #f3f4f6;
-    padding: 0.2em 0.4em;
-    border-radius: 0.25em;
+    background-color: #eef2ff;
+    padding: 0.2em 0.45em;
+    border-radius: 0.35em;
+    border: 1px solid rgba(59, 130, 246, 0.15);
     font-size: 0.9em;
+    color: #1f2937;
   }
 
   :global(.dark .prose code) {
-    background-color: #374151;
+    background-color: #111827;
+    border-color: rgba(148, 163, 184, 0.25);
+    color: #e5e7eb;
   }
 
   :global(.prose pre) {
-    background-color: #f3f4f6;
+    background-color: #f8fafc;
     padding: 1em;
-    border-radius: 0.5em;
+    border-radius: 0.75em;
     overflow-x: auto;
     margin-bottom: 1em;
+    border: 1px solid #e5e7eb;
   }
 
   :global(.dark .prose pre) {
-    background-color: #1f2937;
+    background-color: #111827;
+    border-color: #374151;
+  }
+
+  :global(.prose table) {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+  }
+
+  :global(.prose th),
+  :global(.prose td) {
+    padding: 0.85rem 1rem;
+    border: 1px solid #e5e7eb;
+  }
+
+  :global(.dark .prose th),
+  :global(.dark .prose td) {
+    border-color: #374151;
+  }
+
+  :global(.prose thead) {
+    background-color: #f8fafc;
+  }
+
+  :global(.dark .prose thead) {
+    background-color: #111827;
   }
 
   :global(.prose blockquote) {
@@ -114,6 +154,23 @@ const { Content } = await post.render();
 
   :global(.dark .prose blockquote) {
     border-left-color: #4b5563;
+  }
+
+  :global(.prose img) {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    max-width: none;
+  }
+
+  :global(.prose p:has(img)) {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Strip per-token backgrounds Shiki injects */
+  :global(.prose pre span) {
+    background-color: transparent !important;
   }
 </style>
 

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dharun-builds.vercel.app/sitemap-index.xml

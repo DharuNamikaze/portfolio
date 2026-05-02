@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Postgres is Actually a GOAT — Dharunamikaze</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0e0e0e;
+    --paper: #f7f4ef;
+    --paper-2: #ede9e2;
+    --accent: #1a4fff;
+    --accent-dim: #d6e0ff;
+    --red: #c0392b;
+    --green: #1a6b3a;
+    --amber: #b8620a;
+    --rule: rgba(14,14,14,0.12);
+    --mono: 'JetBrains Mono', monospace;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --max: 780px;
+    --wide: 1080px;
+  }
+
+  html { font-size: 17px; scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── MASTHEAD ── */
+  .masthead {
+    border-bottom: 1.5px solid var(--ink);
+    padding: 1.2rem var(--max) 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: var(--wide);
+    margin: 0 auto;
+    padding: 1.2rem 2rem;
+  }
+  .masthead-brand {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .masthead-date {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: rgba(14,14,14,0.45);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    max-width: var(--wide);
+    margin: 0 auto;
+    padding: 5rem 2rem 3rem;
+    border-bottom: 1.5px solid var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: 'PG';
+    position: absolute;
+    right: -0.05em;
+    top: -0.15em;
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 28vw;
+    color: rgba(14,14,14,0.04);
+    pointer-events: none;
+    line-height: 1;
+    max-font-size: 22rem;
+  }
+  .hero-kicker {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .hero-kicker::before {
+    content: '';
+    display: inline-block;
+    width: 2rem;
+    height: 1.5px;
+    background: var(--accent);
+  }
+  .hero-title {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    max-width: 14ch;
+    margin-bottom: 1.5rem;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-deck {
+    font-size: 1.15rem;
+    font-weight: 300;
+    max-width: 58ch;
+    line-height: 1.65;
+    color: rgba(14,14,14,0.7);
+    margin-bottom: 2.5rem;
+    border-left: 3px solid var(--accent);
+    padding-left: 1.2rem;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .hero-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .hero-meta-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(14,14,14,0.4);
+  }
+  .hero-meta-value {
+    font-size: 0.85rem;
+    font-weight: 400;
+  }
+
+  /* ── LAYOUT ── */
+  .content-wrap {
+    max-width: var(--wide);
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 0;
+    align-items: start;
+  }
+
+  /* ── TOC SIDEBAR ── */
+  .toc {
+    position: sticky;
+    top: 2rem;
+    padding: 3rem 2rem 3rem 0;
+    border-right: 1px solid var(--rule);
+  }
+  .toc-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(14,14,14,0.4);
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .toc-list { list-style: none; }
+  .toc-list li { margin-bottom: 0; }
+  .toc-list a {
+    display: block;
+    font-size: 0.78rem;
+    color: rgba(14,14,14,0.55);
+    text-decoration: none;
+    padding: 0.3rem 0;
+    border-left: 2px solid transparent;
+    padding-left: 0.7rem;
+    transition: color 0.2s, border-color 0.2s;
+    line-height: 1.35;
+  }
+  .toc-list a:hover {
+    color: var(--accent);
+    border-left-color: var(--accent);
+  }
+  .toc-divider {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 0.6rem 0 0.6rem 0.7rem;
+  }
+
+  /* ── ARTICLE BODY ── */
+  .article {
+    padding: 4rem 0 6rem 3.5rem;
+    min-width: 0;
+  }
+
+  /* ── PROSE ── */
+  p { margin-bottom: 1.4rem; }
+  p:last-child { margin-bottom: 0; }
+
+  .lead {
+    font-size: 1.2rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: rgba(14,14,14,0.8);
+    margin-bottom: 2rem;
+  }
+
+  strong { font-weight: 500; }
+
+  a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+
+  /* ── SECTION HEADERS ── */
+  .section-banner {
+    margin: 4rem 0 2rem;
+    padding: 0;
+    position: relative;
+  }
+  .section-banner-tag {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--paper);
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    margin-bottom: 0.8rem;
+  }
+  .section-banner h2 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+  }
+  .section-banner h2 em {
+    font-style: italic;
+    font-weight: 400;
+  }
+  .section-banner-rule {
+    height: 1.5px;
+    background: var(--ink);
+    margin-top: 1.2rem;
+  }
+
+  h3 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin: 2.2rem 0 0.8rem;
+    letter-spacing: -0.01em;
+  }
+
+  h4 {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(14,14,14,0.5);
+    margin: 1.8rem 0 0.6rem;
+  }
+
+  /* ── CODE ── */
+  pre {
+    background: #0e0e0e;
+    color: #d4d4d4;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.65;
+    padding: 1.4rem 1.6rem;
+    overflow-x: auto;
+    margin: 1.4rem 0;
+    position: relative;
+  }
+  pre::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 0.5rem;
+    right: 0.8rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+    font-family: var(--mono);
+  }
+  code {
+    font-family: var(--mono);
+    font-size: 0.82em;
+    background: rgba(14,14,14,0.07);
+    padding: 0.1em 0.35em;
+    border-radius: 2px;
+  }
+  pre code {
+    background: none;
+    font-size: inherit;
+    padding: 0;
+  }
+  .kw { color: #c792ea; }
+  .fn { color: #82aaff; }
+  .st { color: #c3e88d; }
+  .cm { color: #546e7a; font-style: italic; }
+  .nu { color: #f78c6c; }
+  .ty { color: #ffcb6b; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-dim);
+    padding: 1rem 1.25rem;
+    margin: 1.6rem 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  .callout strong {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+  }
+  .callout-warn {
+    border-left-color: #c0392b;
+    background: #fdecea;
+  }
+  .callout-warn strong { color: #c0392b; }
+  .callout-tip {
+    border-left-color: var(--green);
+    background: #e8f5ed;
+  }
+  .callout-tip strong { color: var(--green); }
+
+  /* ── THRESHOLD TABLE ── */
+  .threshold-section {
+    margin: 3rem 0;
+    border: 1.5px solid var(--ink);
+  }
+  .threshold-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.9rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .threshold-header h3 {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--paper);
+  }
+  .legend {
+    display: flex;
+    gap: 1rem;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .legend span { display: flex; align-items: center; gap: 0.35rem; opacity: 0.8; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 1px; flex-shrink: 0; }
+  .dot-g { background: #4caf50; }
+  .dot-a { background: #f59e0b; }
+  .dot-r { background: #ef4444; }
+
+  .threshold-table { width: 100%; border-collapse: collapse; }
+  .threshold-table th {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(14,14,14,0.45);
+    padding: 0.7rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper-2);
+  }
+  .threshold-table td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  .threshold-table tr:last-child td { border-bottom: none; }
+  .threshold-table tr:hover td { background: rgba(14,14,14,0.02); }
+
+  .svc-name { font-weight: 500; font-size: 0.88rem; }
+  .svc-sub { font-size: 0.75rem; color: rgba(14,14,14,0.45); font-family: var(--mono); }
+
+  .bar-wrap { display: flex; flex-direction: column; gap: 4px; }
+  .bar-track { display: flex; height: 5px; background: rgba(14,14,14,0.08); border-radius: 0; overflow: hidden; }
+  .seg-g { background: #4caf50; }
+  .seg-a { background: #f59e0b; }
+  .seg-r { background: #ef4444; }
+  .bar-labels { display: flex; justify-content: space-between; font-size: 0.65rem; color: rgba(14,14,14,0.4); font-family: var(--mono); }
+
+  .badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+  .badge-g { background: #e8f5ed; color: #1a6b3a; }
+  .badge-a { background: #fef3c7; color: #92400e; }
+  .badge-r { background: #fdecea; color: #991b1b; }
+
+  .breakdown-note { font-size: 0.8rem; color: rgba(14,14,14,0.6); line-height: 1.5; }
+
+  /* ── FEATURE GRID ── */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 1.6rem 0;
+  }
+  .feature-cell {
+    background: var(--paper);
+    padding: 1rem 1.1rem;
+  }
+  .feature-cell-title {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.35rem;
+  }
+  .feature-cell p {
+    font-size: 0.85rem;
+    margin: 0;
+    color: rgba(14,14,14,0.7);
+    line-height: 1.5;
+  }
+
+  /* ── COMPARISON SPLIT ── */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 1.4rem 0;
+  }
+  .compare-col { background: var(--paper); padding: 1rem 1.2rem; }
+  .compare-col-title {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .compare-col-title.before { color: rgba(14,14,14,0.4); }
+  .compare-col-title.after { color: var(--accent); }
+  .compare-list { list-style: none; }
+  .compare-list li {
+    font-size: 0.83rem;
+    padding: 0.25rem 0;
+    padding-left: 1rem;
+    position: relative;
+    color: rgba(14,14,14,0.7);
+    line-height: 1.45;
+  }
+  .compare-list li::before {
+    position: absolute;
+    left: 0;
+    top: 0.27rem;
+    font-size: 0.65rem;
+  }
+  .compare-col.before .compare-list li::before { content: '✕'; color: #c0392b; }
+  .compare-col.after .compare-list li::before { content: '✓'; color: var(--green); }
+
+  /* ── ARCH DIAGRAM ── */
+  .arch-box {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 1.8rem;
+    margin: 1.6rem 0;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    line-height: 1.7;
+    overflow-x: auto;
+  }
+  .arch-box .arch-title {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 1rem;
+  }
+
+  /* ── DECISION FRAMEWORK ── */
+  .decision-framework {
+    border: 1.5px solid var(--ink);
+    margin: 3rem 0;
+  }
+  .df-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.9rem 1.2rem;
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+  .df-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    border-bottom: 1px solid var(--rule);
+  }
+  .df-row:last-child { border-bottom: none; }
+  .df-label {
+    background: var(--paper-2);
+    padding: 1rem 1.2rem;
+    border-right: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    line-height: 1.4;
+  }
+  .df-content {
+    padding: 1rem 1.2rem;
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+  .df-content strong { font-weight: 500; }
+
+  /* ── VERDICT ── */
+  .verdict {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 4rem 3rem;
+    margin: 4rem 0 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .verdict::before {
+    content: 'PG';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 22rem;
+    color: rgba(255,255,255,0.03);
+    pointer-events: none;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .verdict h2 {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    margin-bottom: 1.2rem;
+    position: relative;
+  }
+  .verdict p {
+    font-size: 1rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.65);
+    max-width: 52ch;
+    margin: 0 auto 1.5rem;
+    position: relative;
+    line-height: 1.7;
+  }
+  .strikethrough-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1rem;
+    position: relative;
+    margin-top: 2rem;
+  }
+  .strikethrough-list span {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    text-decoration: line-through;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.04em;
+  }
+  .postgres-final {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 2rem;
+    color: var(--paper);
+    margin-top: 1.5rem;
+    position: relative;
+  }
+
+  /* ── SCOPE NOTE ── */
+  .scope-note {
+    border: 1px solid var(--rule);
+    background: var(--paper-2);
+    padding: 1rem 1.4rem;
+    margin: 2.5rem 0;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    display: flex;
+    gap: 0.8rem;
+    align-items: flex-start;
+  }
+  .scope-icon {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 0.2rem 0.4rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 860px) {
+    .content-wrap { grid-template-columns: 1fr; }
+    .toc { display: none; }
+    .article { padding: 2.5rem 0 4rem; }
+    .compare, .feature-grid { grid-template-columns: 1fr; }
+    .df-row { grid-template-columns: 1fr; }
+    .df-label { border-right: none; border-bottom: 1px solid var(--rule); }
+    .masthead { padding: 1rem 1.2rem; }
+    .hero { padding: 3rem 1.2rem 2.5rem; }
+    .content-wrap { padding: 0 1.2rem; }
+    .threshold-table th:nth-child(4),
+    .threshold-table td:nth-child(4) { display: none; }
+  }
+
+  @media (max-width: 520px) {
+    .threshold-table th:nth-child(2),
+    .threshold-table td:nth-child(2) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MASTHEAD -->
+<header>
+  <div class="masthead">
+    <a class="masthead-brand" href="#">Dharunamikaze · Engineering</a>
+    <span class="masthead-date">May 2026 · 14 min read</span>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-kicker">Infrastructure · Databases · Architecture</div>
+  <h1 class="hero-title">Postgres is <em>Actually</em> a GOAT.</h1>
+  <p class="hero-deck">
+    You're running Redis, Elasticsearch, Pinecone, and LangChain in production.
+    What if I told you Postgres can replace all of them — and I can tell you exactly
+    at what scale each one breaks down so you know when to actually migrate?
+  </p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Services covered</span>
+      <span class="hero-meta-value">11 replacements</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">With thresholds</span>
+      <span class="hero-meta-value">Every single one</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Audience</span>
+      <span class="hero-meta-value">Growth-stage SaaS</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<div class="content-wrap">
+
+  <!-- TOC -->
+  <nav class="toc" aria-label="Table of contents">
+    <span class="toc-label">Contents</span>
+    <ul class="toc-list">
+      <li><a href="#intro">The mini-AWS problem</a></li>
+      <hr class="toc-divider">
+      <li><a href="#redis">→ Redis</a></li>
+      <li><a href="#elastic">→ Elasticsearch</a></li>
+      <li><a href="#pinecone">→ Pinecone</a></li>
+      <li><a href="#langchain">→ LangChain</a></li>
+      <li><a href="#timescale">→ InfluxDB</a></li>
+      <li><a href="#postgis">→ Google Maps API</a></li>
+      <li><a href="#rls">→ Casbin / OPA</a></li>
+      <li><a href="#jsonb">→ MongoDB</a></li>
+      <li><a href="#matviews">→ dbt</a></li>
+      <li><a href="#cdc">→ Kafka (CDC)</a></li>
+      <li><a href="#fdw">→ Fivetran</a></li>
+      <hr class="toc-divider">
+      <li><a href="#thresholds">Threshold guide</a></li>
+      <li><a href="#when-not">When NOT to</a></li>
+      <li><a href="#verdict">The verdict</a></li>
+    </ul>
+  </nav>
+
+  <!-- ARTICLE -->
+  <article class="article">
+
+    <!-- INTRO -->
+    <section id="intro">
+      <p class="lead">
+        Every startup eventually builds what I call a <strong>mini-AWS inside their own infrastructure</strong>. 
+        It starts innocently. You need caching — spin up Redis. Search — add Elasticsearch. Your AI feature 
+        needs vector search — hello Pinecone. The RAG pipeline needs orchestration — here comes LangChain. 
+        Geo search? InfluxDB? Multi-tenant auth?
+      </p>
+      <p>
+        Eleven services. Eleven SDKs. Eleven failure modes. Eleven bills. Eleven things your new teammate 
+        has to learn before they can ship anything. And you reached for each one of them before you'd 
+        actually hit the limit of your database.
+      </p>
+      <p>
+        Postgres has been quietly building answers to every one of these problems for years. But most 
+        "use Postgres for everything" posts stop there — they tell you <em>that</em> you can, not 
+        <em>until when</em> you can. This post fixes that. Every replacement comes with a concrete threshold 
+        so you know exactly when to migrate and what breaks first.
+      </p>
+
+      <div class="scope-note">
+        <span class="scope-icon">SCOPE</span>
+        <span>This is architecture-level guidance for growth-phase SaaS — roughly the 0 to 500k MAU range. 
+        At massive scale, dedicated systems win. The argument here is that you probably aren't there yet, 
+        and the complexity cost of fragmented infrastructure is very real.</span>
+      </div>
+    </section>
+
+    <!-- REDIS -->
+    <section id="redis">
+      <div class="section-banner">
+        <div class="section-banner-tag">Kill #1</div>
+        <h2>Replacing <em>Redis</em></h2>
+        <div class="section-banner-rule"></div>
+      </div>
+
+      <p>
+        Redis earns its keep for three things: key-value caching, job queues, and pub/sub. 
+        Postgres has solid — though not identical — answers for all three.
+      </p>
+
+      <h3>1. Key-value caching with unlogged tables</h3>
+      <p>
+        Unlogged tables skip the write-ahead log entirely. They're crash-unsafe on restart, but dramatically 
+        faster for ephemeral data. Pair with a <code>ttl</code> column and a <code>pg_cron</code> cleanup job 
+        and you have Redis-style caching without leaving your DB.
+      </p>
+<pre data-lang="SQL"><code><span class="kw">CREATE UNLOGGED TABLE</span> cache (
+  key   <span class="ty">TEXT</span>        <span class="kw">PRIMARY KEY</span>,
+  value <span class="ty">JSONB</span>       <span class="kw">NOT NULL</span>,
+  ttl   <span class="ty">TIMESTAMPTZ</span> <span class="kw">NOT NULL DEFAULT</span> <span class="fn">now</span>() + <span class="st">'1 hour'</span>
+);
+
+<span class="cm">-- Upsert a cache entry</span>
+<span class="kw">INSERT INTO</span> cache (key, value)
+<span class="kw">VALUES</span> (<span class="st">'user:42:profile'</span>, <span class="st">'{"name":"Dharu"}'</span>::<span class="ty">jsonb</span>)
+<span class="kw">ON CONFLICT</span> (key) <span class="kw">DO UPDATE SET</span>
+  value = EXCLUDED.value,
+  ttl   = <span class="fn">now</span>() + <span class="st">'1 hour'</span>;
+
+<span class="cm">-- Fetch (null if expired)</span>
+<span class="kw">SELECT</span> value <span class="kw">FROM</span> cache
+<span class="kw">WHERE</span> key = <span class="st">'user:42:profile'</span> <span class="kw">AND</span> ttl &gt; <span class="fn">now</span>();
+
+<span class="cm">-- Evict stale entries every 5 min via pg_cron</span>
+<span class="kw">DELETE FROM</span> cache <span class="kw">WHERE</span> ttl &lt; <span class="fn">now</span>();</code></pre>
+
+      <div class="callout callout-warn">
+        <strong>Latency ceiling</strong>
+        Unlogged tables can handle the <em>volume</em> but not in-memory <em>latency</em>. Postgres RTT is 1–5ms. 
+        Redis is sub-millisecond. For high-frequency reads (social feeds, hot session paths), you'll feel this 
+        difference. The signal to watch is p99 cache read latency crossing 5ms — not request throughput.
+        Rule of thumb: keep Redis if you need &lt;1ms reads at &gt;15,000 ops/sec sustained.
+      </div>
+
+      <h3>2. Job queues with SKIP LOCKED</h3>
+      <p>
+        <code>SELECT FOR UPDATE SKIP LOCKED</code> lets multiple workers pull jobs concurrently without 
+        contention. This is how Que, GoodJob, and Oban work — it's a production-proven pattern, not a hack.
+      </p>
+<pre data-lang="SQL"><code><span class="kw">CREATE TABLE</span> job_queue (
+  id         <span class="ty">BIGSERIAL PRIMARY KEY</span>,
+  queue_name <span class="ty">TEXT</span>        <span class="kw">NOT NULL DEFAULT</span> <span class="st">'default'</span>,
+  payload    <span class="ty">JSONB</span>       <span class="kw">NOT NULL</span>,
+  status     <span class="ty">TEXT</span>        <span class="kw">NOT NULL DEFAULT</span> <span class="st">'pending'</span>,
+  run_at     <span class="ty">TIMESTAMPTZ</span> <span class="kw">NOT NULL DEFAULT</span> <span class="fn">now</span>()
+);
+
+<span class="cm">-- Worker: claim exactly one job atomically</span>
+<span class="kw">WITH</span> next_job <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> id <span class="kw">FROM</span> job_queue
+  <span class="kw">WHERE</span> status = <span class="st">'pending'</span> <span class="kw">AND</span> run_at &lt;= <span class="fn">now</span>()
+  <span class="kw">ORDER BY</span> run_at
+  <span class="kw">LIMIT</span> <span class="nu">1</span>
+  <span class="kw">FOR UPDATE SKIP LOCKED</span>
+)
+<span class="kw">UPDATE</span> job_queue <span class="kw">SET</span> status = <span class="st">'processing'</span>
+<span class="kw">WHERE</span> id = (SELECT id <span class="kw">FROM</span> next_job)
+<span class="kw">RETURNING</span> *;</code></pre>
+
+      <div class="callout">
+        <strong>Threshold</strong>
+        Works well up to ~500 jobs/sec. Beyond ~2,000 jobs/sec, row lock churn becomes measurable — 
+        watch <code>pg_stat_activity</code> for worker contention. For email, webhooks, async tasks at 
+        SaaS scale: this is more than enough.
+      </div>
+
+      <h3>3. Pub/sub with LISTEN / NOTIFY</h3>
+      <p>
+        <code>NOTIFY</code> sends a lightweight signal over an existing connection. <code>LISTEN</code> 
+        subscribes to it. Perfect for cache invalidation — terrible for anything requiring delivery guarantees.
+      </p>
+<pre data-lang="SQL"><code><span class="cm">-- Send a signal when a product changes</span>
+<span class="kw">CREATE OR REPLACE FUNCTION</span> <span class="fn">notify_product_change</span>()
+<span class="kw">RETURNS TRIGGER AS</span> $$
+<span class="kw">BEGIN</span>
+  <span class="kw">PERFORM</span> <span class="fn">pg_notify</span>(<span class="st">'product_updates'</span>, row_to_json(NEW)::text);
+  <span class="kw">RETURN</span> NEW;
+<span class="kw">END</span>;
+$$ <span class="kw">LANGUAGE</span> plpgsql;
+
+<span class="kw">CREATE TRIGGER</span> product_change_trigger
+<span class="kw">AFTER INSERT OR UPDATE ON</span> products
+<span class="kw">FOR EACH ROW EXECUTE FUNCTION</span> <span class="fn">notify_product_change</span>();
+
+<span class="cm">-- Subscribe in your app</span>
+<span class="cm">-- await client.query('LISTEN product_updates');</span>
+<span class="cm">-- client.on('notification', (msg) => cache.invalidate(...));</span></code></pre>
+
+      <div class="callout callout-warn">
+        <strong>Hard limit</strong>
+        NOTIFY has no persistence. If your consumer is down, the message is gone. No replay, no 
+        fan-out to multiple consumers, no delivery guarantee. Use it only for stateless signals 
+        (cache bust, UI refresh). For anything requiring guaranteed delivery: keep a queue table 
+        or reach for a real message broker.
+      </div>
+    </section>
+
+    <!-- ELASTICSEARCH -->
+    <section id="elastic">
+      <div class="section-banner">
+        <div class="section-banner-tag">Kill #2</div>
+        <h2>Replacing <em>Elasticsearch</em></h2>
+        <div class="section-banner-rule"></div>
+      </div>
+
+      <p>
+        Elasticsearch is a beast to operate. Postgres's full-text search won't beat it at petabyte log 
+        ingestion, but for product search, blog search, and content discovery it's more than sufficient — 
+        and it stays transactionally consistent with your main data.
+      </p>
+
+      <h3>tsvector + tsquery + GIN index</h3>
+<pre data-lang="SQL"><code><span class="cm">-- Generated search column — no manual sync needed</span>
+<span class="kw">ALTER TABLE</span> products
+<span class="kw">ADD COLUMN</span> search_vector <span class="ty">TSVECTOR</span>
+<span class="kw">GENERATED ALWAYS AS</span> (
+  <span class="fn">setweight</span>(<span class="fn">to_tsvector</span>(<span class="st">'english'</span>, <span class="fn">coalesce</span>(name, <span class="st">''</span>)), <span class="st">'A'</span>) ||
+  <span class="fn">setweight</span>(<span class="fn">to_tsvector</span>(<span class="st">'english'</span>, <span class="fn">coalesce</span>(description, <span class="st">''</span>)), <span class="st">'B'</span>) ||
+  <span class="fn">setweight</span>(<span class="fn">to_tsvector</span>(<span class="st">'english'</span>, <span class="fn">coalesce</span>(brand, <span class="st">''</span>)), <span class="st">'C'</span>)
+) STORED;
+
+<span class="kw">CREATE INDEX</span> idx_products_fts
+  <span class="kw">ON</span> products <span class="kw">USING GIN</span> (search_vector);
+
+<span class="cm">-- Search with relevance ranking</span>
+<span class="kw">SELECT</span> id, name, price,
+  <span class="fn">ts_rank</span>(search_vector, query) <span class="kw">AS</span> rank
+<span class="kw">FROM</span> products,
+  <span class="fn">websearch_to_tsquery</span>(<span class="st">'english'</span>, <span class="st">'wireless noise cancelling headphones'</span>) query
+<span class="kw">WHERE</span> search_vector @@ query
+<span class="kw">ORDER BY</span> rank <span class="kw">DESC LIMIT</span> <span class="nu">20</span>;</code></pre>
+
+      <p>
+        <code>websearch_to_tsquery()</code> understands AND, OR, and quoted phrases — users type naturally 
+        and it works. Add <code>pg_trgm</code> for fuzzy matching on typos.
+      </p>
+
+      <div class="callout callout-warn">
+        <strong>Real ceiling — relevance, not document count</strong>
+        The honest limit is relevance tuning, not the number of documents. BM25 scoring, 
+        custom analyzers, synonyms, and learning-to-rank features — Elasticsearch wins there. 
+        Document count is secondary: Postgres FTS is fast up to ~10–20M docs; at 50M+ with complex 
+        filter combinations, p99 starts drifting. But if you hit relevance tuning as a product requirement 
+        before you hit 10M documents, consider moving earlier.
+      </div>
+    </section>
+
+    <!-- PINECONE -->
+    <section id="pinecone">
+      <div class="section-banner">
+        <div class="section-banner-tag">Kill #3</div>
+        <h2>Replacing <em>Pinecone</em></h2>
+        <div class="section-banner-rule"></div>
+      </div>
+
+      <p>
+        pgvector brings vector similarity search directly into Postgres. The killer advantage: 
+        your embeddings live in the same database as your content — no sync job, no divergence, 
+        atomic joins between vector results and structured filters.
+      </p>
+
+<pre data-lang="SQL"><code><span class="kw">CREATE EXTENSION IF NOT EXISTS</span> vector;
+
+<span class="kw">CREATE TABLE</span> document_chunks (
+  id        <span class="ty">UUID PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
+  content   <span class="ty">TEXT</span>         <span class="kw">NOT NULL</span>,
+  metadata  <span class="ty">JSONB</span>,
+  embedding <span class="ty">VECTOR(1536)</span>,  <span class="cm">-- OpenAI text-embedding-3-small</span>
+  created_at <span class="ty">TIMESTAMPTZ</span> <span class="kw">DEFAULT</span> <span class="fn">now</span>()
+);
+
+<span class="cm">-- HNSW index (faster queries, ideal for most use cases)</span>
+<span class="kw">CREATE INDEX</span> idx_chunks_hnsw
+  <span class="kw">ON</span> document_chunks <span class="kw">USING hnsw</span> (embedding vector_cosine_ops)
+  <span class="kw">WITH</span> (m = <span class="nu">16</span>, ef_construction = <span class="nu">64</span>);
+
+<span class="cm">-- Hybrid: vector similarity + metadata filter in one query</span>
+<span class="kw">SELECT</span> id, content, embedding &lt;=&gt; $<span class="nu">1</span> <span class="kw">AS</span> dist
+<span class="kw">FROM</span>   document_chunks
+<span class="kw">WHERE</span>  metadata -&gt;&gt; <span class="st">'source'</span> = <span class="st">'product_docs'</span>
+<span class="kw">ORDER BY</span> dist <span class="kw">LIMIT</span> <span class="nu">5</span>;</code></pre>
+
+      <div class="callout callout-warn">
+        <strong>RAM is your ceiling, not row count</strong>
+        The HNSW index lives in RAM. At 1536 dimensions, 1M vectors ≈ 6GB of index memory. 
+        At 5M vectors you're at ~30GB. The moment your HNSW index starts getting evicted from 
+        RAM, queries slow dramatically. Watch memory pressure, not vector count. 
+        At ~20M+ vectors, dedicated ANN systems (Qdrant, Weaviate) win because their infrastructure 
+        is tuned for this.
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-cell">
+          <div class="feature-cell-title">&lt;-&gt; Euclidean</div>
+          <p>L2 distance. Best for image embeddings and geometric similarity.</p>
+        </div>
+        <div class="feature-cell">
+          <div class="feature-cell-title">&lt;=&gt; Cosine</div>
+          <p>Best for text embeddings. Insensitive to vector magnitude.</p>
+        </div>
+        <div class="feature-cell">
+          <div class="feature-cell-title">&lt;#&gt; Inner product</div>
+          <p>Fast with pre-normalized embeddings. Used in some recommendation systems.</p>
+        </div>
+        <div class="feature-cell">
+          <div class="feature-cell-title">Atomic joins</div>
+          <p>Vector results + SQL filters in a single query. Impossible with a separate vector DB.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- LANGCHAIN -->
+    <section id="langchain">
+      <div class="section-banner">
+        <div class="section-banner-tag">Kill #4</div>
+        <h2>Replacing <em>LangChain</em></h2>
+        <div class="section-banner-rule"></div>
+      </div>
+
+      <p>
+        LangChain is a framework for chaining LLM calls: retrieve context, build a prompt, call the model, 
+        parse the output. It's powerful but notoriously heavy. At its core, a RAG pipeline is a few HTTP 
+        requests and some string manipulation. With pgvector and the <code>http</code> extension, you can 
+        do this entirely in Postgres.
+      </p>
+
+<pre data-lang="SQL"><code><span class="kw">CREATE EXTENSION IF NOT EXISTS</span> http;
+
+<span class="kw">CREATE OR REPLACE FUNCTION</span> <span class="fn">rag_query</span>(
+  user_question   <span class="ty">TEXT</span>,
+  query_embedding <span class="ty">VECTOR(1536)</span>,
+  top_k           <span class="ty">INT DEFAULT</span> <span class="nu">5</span>
+) <span class="kw">RETURNS TEXT AS</span> $$
+<span class="kw">DECLARE</span>
+  context_chunks <span class="ty">TEXT</span>;
+  prompt         <span class="ty">TEXT</span>;
+  api_response   http_response;
+  answer         <span class="ty">TEXT</span>;
+<span class="kw">BEGIN</span>
+  <span class="cm">-- Step 1: retrieve semantically relevant chunks</span>
+  <span class="kw">SELECT</span> <span class="fn">string_agg</span>(content, E<span class="st">'\n---\n'</span>)
+  <span class="kw">INTO</span> context_chunks
+  <span class="kw">FROM</span> (
+    <span class="kw">SELECT</span> content <span class="kw">FROM</span> document_chunks
+    <span class="kw">ORDER BY</span> embedding &lt;=&gt; query_embedding <span class="kw">LIMIT</span> top_k
+  ) c;
+
+  <span class="cm">-- Step 2: build the prompt</span>
+  prompt := <span class="fn">format</span>(
+    <span class="st">'Answer using only this context:\n\n%s\n\nQuestion: %s'</span>,
+    context_chunks, user_question
+  );
+
+  <span class="cm">-- Step 3: call the LLM</span>
+  <span class="kw">SELECT</span> * <span class="kw">INTO</span> api_response
+  <span class="kw">FROM</span> <span class="fn">http_post</span>(
+    <span class="st">'https://api.openai.com/v1/chat/completions'</span>,
+    <span class="fn">json_build_object</span>(<span class="st">'model'</span>, <span class="st">'gpt-4o-mini'</span>, <span class="st">'messages'</span>,
+      <span class="fn">json_build_array</span>(<span class="fn">json_build_object</span>(<span class="st">'role'</span>, <span class="st">'user'</span>, <span class="st">'content'</span>, prompt))
+    )::text, <span class="st">'application/json'</span>
+  );
+
+  <span class="cm">-- Step 4: parse and return</span>
+  <span class="kw">SELECT</span> api_response.content::jsonb
+    -&gt; <span class="st">'choices'</span> -&gt; <span class="nu">0</span> -&gt; <span class="st">'message'</span> -&gt;&gt; <span class="st">'content'</span>
+  <span class="kw">INTO</span> answer;
+  <span class="kw">RETURN</span> answer;
+<span class="kw">END</span>;
+$$ <span class="kw">LANGUAGE</span> plpgsql;</code></pre>
+
+      <div class="callout">
+        <strong>When LangChain still wins</strong>
+        The PL/pgSQL approach is elegant for simple retrieval → generate flows. 
+        Multi-agent loops, streaming responses, complex tool-use chains, and retry logic all 
+        benefit from a proper framework. Use Postgres RAG for the 80% case; reach for LangChain 
+        or LlamaIndex when your product requires complex orchestration logic.
+      </div>
+    </section>
+
+    <!-- INFLUXDB -->
+    <section id="timescale">
+      <div class="section-banner">
+        <div class="section-banner-tag">Kill #5</div>
+        <h2>Replacing <em>InfluxDB</em> — Time-series with TimescaleDB</h2>
+        <div class="section-banner-rule"></div>
+      </div>
+
+      <p>
+        TimescaleDB is a Postgres extension that adds automatic time-based partitioning, 
+        time-series aggregation functions, and continuous aggregates. It looks like a normal Postgres 
+        table to your app.
+      </p>
+
+<pre data-lang="SQL"><code><span class="kw">CREATE EXTENSION IF NOT EXISTS</span> timescaledb;
+
+<span class="kw">CREATE TABLE</span> metrics (
+  time    <span class="ty">TIMESTAMPTZ</span>      <span class="kw">NOT NULL</span>,
+  service <span class="ty">TEXT</span>             <span class="kw">NOT NULL</span>,
+  metric  <span class="ty">TEXT</span>             <span class="kw">NOT NULL</span>,
+  value   <span class="ty">DOUBLE PRECISION</span>,
+  tags    <span class="ty">JSONB</span>
+);
+<span class="kw">SELECT</span> <span class="fn">create_hypertable</span>(<span class="st">'metrics'</span>, <span class="st">'time'</span>,
+  chunk_time_interval =&gt; <span class="kw">INTERVAL</span> <span class="st">'1 week'</span>);
+
+<span class="cm">-- P99 response time bucketed by 5 minutes</span>
+<span class="kw">SELECT</span>
+  <span class="fn">time_bucket</span>(<span class="st">'5 minutes'</span>, time) <span class="kw">AS</span> bucket,
+  service,
+  <span class="fn">percentile_cont</span>(<span class="nu">0.99</span>) <span class="kw">WITHIN GROUP</span> (<span class="kw">ORDER BY</span> value) <span class="kw">AS</span> p99
+<span class="kw">FROM</span>  metrics
+<span class="kw">WHERE</span> metric = <span class="st">'response_time_ms'</span>
+  <span class="kw">AND</span> time &gt; <span class="fn">now</span>() - <span class="kw">INTERVAL</span> <span class="st">'1 hour'</span>
+<span class="kw">GROUP BY</span> bucket, service
+<span class="kw">ORDER BY</span> bucket <span class="kw">DESC</span>;</code></pre>
+
+      <div class="callout callout-warn">
+        <strong>Threshold: ~100k rows/sec write pressure</strong>
+        TimescaleDB is great for product analytics, APM, and IoT at reasonable scale. 
+        The gap versus dedicated TSDBs is columnar compression — ClickHouse can store the 
+        same data in 10× less space and query it 10× faster at the high end. 
+        Watch WAL write pressure on your primary. If metrics ingestion is causing WAL lag that 
+        affects your main transactional workload, time to split.
+      </div>
+    </section>
+
+    <!-- POSTGIS -->
+    <section id="postgis">
+      <div class="section-banner">
+        <div class="section-banner-tag">Kill #6</div>
+        <h2>Replacing <em>Google Maps API</em> — PostGIS</h2>
+        <div class="section-banner-rule"></div>
+      </div>
+
+      <p>
+        Every call to the Google Maps Distance Matrix API or Nearby Places API is a paid request. 
+        PostGIS gives you the same capabilities at zero marginal cost: radius search, polygon containment, 
+        distance calculation — all in SQL.
+      </p>
+
+<pre data-lang="SQL"><code><span class="kw">CREATE EXTENSION IF NOT EXISTS</span> postgis;
+
+<span class="kw">CREATE TABLE</span> stores (
+  id       <span class="ty">UUID PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
+  name     <span class="ty">TEXT</span>                   <span class="kw">NOT NULL</span>,
+  location <span class="ty">GEOGRAPHY(POINT, 4326)</span>  <span class="cm">-- WGS84 lat/lng</span>
+);
+
+<span class="kw">CREATE INDEX</span> idx_stores_location
+  <span class="kw">ON</span> stores <span class="kw">USING GIST</span> (location);
+
+<span class="cm">-- Stores within 10km — with distance in the result</span>
+<span class="kw">SELECT</span> name,
+  <span class="fn">ST_Distance</span>(location, <span class="fn">ST_MakePoint</span>(<span class="nu">80.2707</span>, <span class="nu">13.0827</span>)::geography) / <span class="nu">1000</span>
+  <span class="kw">AS</span> distance_km
+<span class="kw">FROM</span>   stores
+<span class="kw">WHERE  ST_DWithin</span>(location, <span class="fn">ST_MakePoint</span>(<span class="nu">80.2707</span>, <span class="nu">13.0827</span>)::geography, <span class="nu">10000</span>)
+<span class="kw">ORDER BY</span> distance_km;
+
+<span class="cm">-- Delivery zone — is this customer inside the polygon?</span>
+<span class="kw">SELECT</span> dz.name
+<span class="kw">FROM</span>   delivery_zones dz
+<span class="kw">WHERE  ST_Contains</span>(dz.zone::geometry, <span class="fn">ST_MakePoint</span>(<span class="nu">80.2707</span>, <span class="nu">13.0827</span>));</code></pre>
+
+      <div class="callout callout-tip">
+        <strong>Strongest replacement on this list</strong>
+        PostGIS is the most "unlimited" swap here. You'd need Google Maps specifically for forward 
+        geocoding (address string → coordinates) — PostGIS doesn't do that. For everything else, 
+        it's production-ready at arbitrary scale with a spatial GIST index. Use Nominatim 
+        (self-hosted OpenStreetMap) if you need geocoding.
+      </div>
+    </section>
+
+    <!-- RLS -->
+    <section id="rls">
+      <div class="section-banner">
+        <div class="section-banner-tag">Kill #7</div>
+        <h2>Replacing <em>Casbin / OPA</em> — Row Level Security</h2>
+        <div class="section-banner-rule"></div>
+      </div>
+
+      <p>
+        Most multi-tenant apps implement authorization in application code. This is fragile — one missed 
+        check equals a data leak. Row Level Security enforces access policies at the database layer. 
+        It's physically impossible to return rows a user shouldn't see.
+      </p>
+
+<pre data-lang="SQL"><code><span class="kw">ALTER TABLE</span> orders <span class="kw">ENABLE ROW LEVEL SECURITY</span>;
+
+<span class="cm">-- Customers see only their own orders</span>
+<span class="kw">CREATE POLICY</span> orders_isolation <span class="kw">ON</span> orders
+<span class="kw">FOR ALL USING</span> (
+  customer_id = <span class="fn">current_setting</span>(<span class="st">'app.current_user_id'</span>)::<span class="ty">uuid</span>
+);
+
+<span class="cm">-- Multi-tenant: each org sees only their products</span>
+<span class="kw">CREATE POLICY</span> products_tenant_isolation <span class="kw">ON</span> products
+<span class="kw">USING</span> (org_id = <span class="fn">current_setting</span>(<span class="st">'app.current_org_id'</span>)::<span class="ty">uuid</span>);
+
+<span class="cm">-- Set per-request in your app (Node.js)</span>
+<span class="cm">-- await client.query(`</span>
+<span class="cm">--   SET LOCAL app.current_user_id = '${userId}';</span>
+<span class="cm">--   SET LOCAL app.current_org_id  = '${orgId}';`</span>
+<span class="cm">-- );</span></code></pre>
+
+      <div class="callout callout-warn">
+        <strong>Threshold: policy complexity, not scale</strong>
+        RLS breaks when your authorization logic needs to call an external service — 
+        "is this user's subscription active in Stripe?", "does this user have a feature flag 
+        set in LaunchDarkly?". RLS is database-local; it can't make HTTP calls. 
+        Also: RLS adds ~5–10% query overhead. For complex policies with many joins, 
+        benchmark before assuming it's free.
+      </div>
+    </section>
+
+    <!-- JSONB -->
+    <section id="jsonb">
+      <div class="section-banner">
+        <div class="section-banner-tag">Kill #8</div>
+        <h2>Replacing <em>MongoDB</em> — JSONB</h2>
+        <div class="section-banner-rule"></div>
+      </div>
+
+      <p>
+        The classic reason for MongoDB is "flexible schema." JSONB gives you exactly that, 
+        while keeping your data in the same ACID-compliant, transactional database as the rest 
+        of your models.
+      </p>
+
+<pre data-lang="SQL"><code><span class="kw">CREATE TABLE</span> products (
+  id         <span class="ty">UUID PRIMARY KEY DEFAULT</span> <span class="fn">gen_random_uuid</span>(),
+  name       <span class="ty">TEXT</span>       <span class="kw">NOT NULL</span>,
+  price_inr  <span class="ty">NUMERIC(10,2)</span> <span class="kw">NOT NULL</span>,
+  attributes <span class="ty">JSONB</span>  <span class="cm">-- flexible per-category schema</span>
+);
+
+<span class="cm">-- GIN index: all JSONB operators run fast</span>
+<span class="kw">CREATE INDEX</span> idx_products_attrs <span class="kw">ON</span> products <span class="kw">USING GIN</span> (attributes);
+
+<span class="cm">-- Containment query</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> products
+<span class="kw">WHERE</span> attributes @&gt; <span class="st">'{"color":"indigo","fabric":"silk"}'</span>;
+
+<span class="cm">-- Surgical update — no rewrite of full document</span>
+<span class="kw">UPDATE</span> products
+<span class="kw">SET</span> attributes = <span class="fn">jsonb_set</span>(attributes, <span class="st">'{color}'</span>, <span class="st">'"navy"'</span>)
+<span class="kw">WHERE</span> id = $<span class="nu">1</span>;</code></pre>
+
+      <div class="callout callout-tip">
+        <strong>Second strongest replacement</strong>
+        GIN + JSONB at 100M+ rows is still fast. You only lose to MongoDB when you need 
+        its native aggregation pipeline syntax, multi-master sharding, or change streams. 
+        The probability you need those before you need the ACID guarantees Postgres provides 
+        is very low for most SaaS products.
+      </div>
+    </section>
+
+    <!-- MATVIEWS -->
+    <section id="matviews">
+      <div class="section-banner">
+        <div class="section-banner-tag">Kill #9</div>
+        <h2>Replacing <em>dbt</em> — Materialized Views</h2>
+        <div class="section-banner-rule"></div>
+      </div>
+
+      <p>
+        A large chunk of everyday dbt usage is "run this aggregation on a schedule and cache the result." 
+        Postgres materialized views + pg_cron handle that natively, with zero external tooling.
+      </p>
+
+<pre data-lang="SQL"><code><span class="cm">-- Pre-compute revenue by category, refreshed nightly</span>
+<span class="kw">CREATE MATERIALIZED VIEW</span> mv_revenue_by_category <span class="kw">AS</span>
+<span class="kw">SELECT</span>
+  p.category,
+  <span class="fn">date_trunc</span>(<span class="st">'day'</span>, o.created_at) <span class="kw">AS</span> day,
+  <span class="fn">count</span>(*)                           <span class="kw">AS</span> order_count,
+  <span class="fn">sum</span>(oi.quantity * oi.unit_price_inr) <span class="kw">AS</span> revenue_inr
+<span class="kw">FROM</span>   orders o
+<span class="kw">JOIN</span>   order_items oi <span class="kw">ON</span> oi.order_id = o.id
+<span class="kw">JOIN</span>   products p    <span class="kw">ON</span> p.id = oi.product_id
+<span class="kw">WHERE</span>  o.status = <span class="st">'completed'</span>
+<span class="kw">GROUP BY</span> p.category, day;
+
+<span class="cm">-- Non-blocking refresh (requires unique index)</span>
+<span class="kw">CREATE UNIQUE INDEX</span> idx_mv_rev_cat_unique
+  <span class="kw">ON</span> mv_revenue_by_category (category, day);
+
+<span class="kw">SELECT</span> <span class="fn">cron.schedule</span>(<span class="st">'refresh-revenue-mv'</span>, <span class="st">'0 1 * * *'</span>,
+  $$<span class="kw">REFRESH MATERIALIZED VIEW CONCURRENTLY</span> mv_revenue_by_category$$
+);</code></pre>
+
+      <div class="callout callout-warn">
+        <strong>Threshold: DAG complexity</strong>
+        Works until your view dependency graph gets tangled or refresh takes &gt;2 minutes. 
+        <code>REFRESH CONCURRENTLY</code> requires a unique index and still takes a full table 
+        scan. dbt wins when you have complex multi-step transformations with lineage tracking, 
+        incremental models, or data tests. For dashboard caching and simple rollups: 
+        materialized views are completely sufficient.
+      </div>
+    </section>
+
+    <!-- CDC -->
+    <section id="cdc">
+      <div class="section-banner">
+        <div class="section-banner-tag">Kill #10</div>
+        <h2>Replacing <em>Kafka</em> — Logical Replication CDC</h2>
+        <div class="section-banner-rule"></div>
+      </div>
+
+      <p>
+        Change Data Capture streams every row-level change from your database to downstream consumers. 
+        The standard stack is Debezium + Kafka. Postgres has CDC built in via logical replication.
+      </p>
+
+<pre data-lang="SQL"><code><span class="cm">-- postgresql.conf: wal_level = logical</span>
+
+<span class="cm">-- Create a replication slot</span>
+<span class="kw">SELECT</span> <span class="fn">pg_create_logical_replication_slot</span>(
+  <span class="st">'my_app_slot'</span>, <span class="st">'pgoutput'</span>
+);
+
+<span class="cm">-- Publish specific tables</span>
+<span class="kw">CREATE PUBLICATION</span> mithilla_pub
+  <span class="kw">FOR TABLE</span> products, orders, inventory;
+
+<span class="cm">-- wal2json gives clean JSON change events:</span>
+<span class="cm">-- {"action":"I","table":"orders","columns":[{"name":"id",...}]}</span></code></pre>
+
+      <div class="callout callout-warn">
+        <strong>Danger: WAL accumulation — this one can crash your primary</strong>
+        This is the most operationally risky swap on the list. Replication slots hold WAL files 
+        until the consumer reads them. If your consumer lags or dies, WAL accumulates unboundedly 
+        and <strong>can fill disk and crash your primary instance</strong>. Always set 
+        <code>max_slot_wal_keep_size</code> in postgresql.conf to cap retention — which means 
+        accepting that a lagging consumer gets its slot dropped.
+
+        Use this for 1–2 internal consumers (sync to search index, invalidate cache). 
+        For fan-out to many consumers, guaranteed replay, or complex ordering requirements: 
+        use Kafka or a managed tool like Sequin.
+      </div>
+    </section>
+
+    <!-- FDW -->
+    <section id="fdw">
+      <div class="section-banner">
+        <div class="section-banner-tag">Kill #11</div>
+        <h2>Replacing <em>Fivetran</em> — Foreign Data Wrappers</h2>
+        <div class="section-banner-rule"></div>
+      </div>
+
+      <p>
+        FDWs let you query external data sources — other Postgres databases, MySQL, S3 CSVs, 
+        REST APIs — as if they were local tables. For simple sync jobs that don't need Fivetran's 
+        300+ connectors, FDWs are a clean solution.
+      </p>
+
+<pre data-lang="SQL"><code><span class="kw">CREATE EXTENSION IF NOT EXISTS</span> postgres_fdw;
+
+<span class="kw">CREATE SERVER</span> legacy_db <span class="kw">FOREIGN DATA WRAPPER</span> postgres_fdw
+  <span class="kw">OPTIONS</span> (host <span class="st">'legacy.db.internal'</span>, dbname <span class="st">'warehouse'</span>);
+
+<span class="kw">IMPORT FOREIGN SCHEMA</span> public
+  <span class="kw">FROM SERVER</span> legacy_db <span class="kw">INTO</span> legacy_schema;
+
+<span class="cm">-- JOIN across two databases as if local</span>
+<span class="kw">SELECT</span> o.id, o.total_inr, l.customer_tier
+<span class="kw">FROM</span>   orders             o
+<span class="kw">JOIN</span>   legacy_schema.customers l <span class="kw">ON</span> l.email = o.customer_email
+<span class="kw">WHERE</span>  o.created_at &gt; <span class="fn">now</span>() - <span class="kw">INTERVAL</span> <span class="st">'7 days'</span>;
+
+<span class="cm">-- file_fdw: query a CSV as a table</span>
+<span class="kw">CREATE FOREIGN TABLE</span> raw_pincode_data (
+  pincode TEXT, district TEXT, state TEXT
+) <span class="kw">SERVER</span> flat_files
+<span class="kw">OPTIONS</span> (filename <span class="st">'/data/india_pincodes.csv'</span>, format <span class="st">'csv'</span>, header <span class="st">'true'</span>);</code></pre>
+
+      <div class="callout callout-warn">
+        <strong>Threshold: WHERE clause pushdown</strong>
+        FDW is deceptively simple until the query planner fails to push your WHERE clause to 
+        the remote server. When pushdown fails, Postgres fetches the entire remote table locally 
+        and filters in memory. On a 50M row table, that's a full network transfer. 
+        Always check <code>EXPLAIN</code> output for "Foreign Scan" vs "Remote SQL" — if your 
+        filter conditions aren't in the Remote SQL, you have a full scan problem.
+      </div>
+    </section>
+
+    <!-- THRESHOLD TABLE -->
+    <section id="thresholds">
+      <div class="section-banner">
+        <div class="section-banner-tag">Reference</div>
+        <h2>The Complete <em>Threshold Guide</em></h2>
+        <div class="section-banner-rule"></div>
+      </div>
+
+      <p>
+        Every replacement has a different ceiling. Here's the consolidated view — 
+        what breaks first, and what signal tells you to migrate.
+      </p>
+
+      <div class="threshold-section">
+        <div class="threshold-header">
+          <h3>Postgres vs. the world — when each approach breaks down</h3>
+          <div class="legend">
+            <span><div class="legend-dot dot-g"></div>Solid</span>
+            <span><div class="legend-dot dot-a"></div>Monitor</span>
+            <span><div class="legend-dot dot-r"></div>Migrate</span>
+          </div>
+        </div>
+        <div style="overflow-x: auto;">
+        <table class="threshold-table">
+          <thead>
+            <tr>
+              <th>Instead of</th>
+              <th>Scale band</th>
+              <th>Migrate signal</th>
+              <th>What breaks first</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="svc-name">Unlogged tables</div><div class="svc-sub">vs Redis cache</div></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="seg-g" style="width:55%"></div><div class="seg-a" style="width:25%"></div><div class="seg-r" style="width:20%"></div></div>
+                  <div class="bar-labels"><span>0</span><span>5k ops/s</span><span>15k ops/s</span></div>
+                </div>
+              </td>
+              <td><span class="badge badge-a">p99 cache read &gt;5ms</span></td>
+              <td class="breakdown-note">Latency ceiling, not throughput. Network + disk vs in-memory.</td>
+            </tr>
+            <tr>
+              <td><div class="svc-name">SKIP LOCKED queue</div><div class="svc-sub">vs BullMQ / Sidekiq</div></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="seg-g" style="width:60%"></div><div class="seg-a" style="width:25%"></div><div class="seg-r" style="width:15%"></div></div>
+                  <div class="bar-labels"><span>0</span><span>~500 jobs/s</span><span>~2k jobs/s</span></div>
+                </div>
+              </td>
+              <td><span class="badge badge-a">Worker contention in pg_stat_activity</span></td>
+              <td class="breakdown-note">Row lock churn at high concurrency. Fine for email, webhooks.</td>
+            </tr>
+            <tr>
+              <td><div class="svc-name">LISTEN / NOTIFY</div><div class="svc-sub">vs Redis pub/sub</div></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="seg-g" style="width:40%"></div><div class="seg-a" style="width:25%"></div><div class="seg-r" style="width:35%"></div></div>
+                  <div class="bar-labels"><span>0</span><span>~100 listeners</span><span>500+</span></div>
+                </div>
+              </td>
+              <td><span class="badge badge-r">Need delivery guarantees</span></td>
+              <td class="breakdown-note">No persistence. Missed NOTIFY = silent failure.</td>
+            </tr>
+            <tr>
+              <td><div class="svc-name">tsvector + GIN</div><div class="svc-sub">vs Elasticsearch</div></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="seg-g" style="width:65%"></div><div class="seg-a" style="width:20%"></div><div class="seg-r" style="width:15%"></div></div>
+                  <div class="bar-labels"><span>0</span><span>~10M docs</span><span>~50M docs</span></div>
+                </div>
+              </td>
+              <td><span class="badge badge-a">Search p99 &gt;200ms on filtered queries</span></td>
+              <td class="breakdown-note">Relevance tuning is the real ceiling, not doc count.</td>
+            </tr>
+            <tr>
+              <td><div class="svc-name">pgvector HNSW</div><div class="svc-sub">vs Pinecone / Qdrant</div></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="seg-g" style="width:50%"></div><div class="seg-a" style="width:30%"></div><div class="seg-r" style="width:20%"></div></div>
+                  <div class="bar-labels"><span>0</span><span>~5M vectors</span><span>~20M vectors</span></div>
+                </div>
+              </td>
+              <td><span class="badge badge-a">HNSW index RAM &gt;60% of instance memory</span></td>
+              <td class="breakdown-note">Index lives in RAM. 1M vectors × 1536-dim ≈ 6GB.</td>
+            </tr>
+            <tr>
+              <td><div class="svc-name">TimescaleDB</div><div class="svc-sub">vs InfluxDB / ClickHouse</div></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="seg-g" style="width:60%"></div><div class="seg-a" style="width:25%"></div><div class="seg-r" style="width:15%"></div></div>
+                  <div class="bar-labels"><span>0</span><span>~100k rows/s</span><span>~1M rows/s</span></div>
+                </div>
+              </td>
+              <td><span class="badge badge-a">WAL write lag on primary</span></td>
+              <td class="breakdown-note">Columnar compression is the gap — ClickHouse wins at scale.</td>
+            </tr>
+            <tr>
+              <td><div class="svc-name">PostGIS</div><div class="svc-sub">vs Google Maps API</div></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="seg-g" style="width:90%"></div><div class="seg-a" style="width:8%"></div><div class="seg-r" style="width:2%"></div></div>
+                  <div class="bar-labels"><span>0</span><span>effectively unlimited</span><span></span></div>
+                </div>
+              </td>
+              <td><span class="badge badge-g">Need forward geocoding</span></td>
+              <td class="breakdown-note">PostGIS doesn't geocode. Everything else: no ceiling.</td>
+            </tr>
+            <tr>
+              <td><div class="svc-name">Row Level Security</div><div class="svc-sub">vs Casbin / OPA</div></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="seg-g" style="width:75%"></div><div class="seg-a" style="width:15%"></div><div class="seg-r" style="width:10%"></div></div>
+                  <div class="bar-labels"><span>0</span><span>simple policies</span><span>external data</span></div>
+                </div>
+              </td>
+              <td><span class="badge badge-a">Policy needs external service call</span></td>
+              <td class="breakdown-note">DB-local only. Can't call Stripe, LaunchDarkly, etc.</td>
+            </tr>
+            <tr>
+              <td><div class="svc-name">JSONB + GIN</div><div class="svc-sub">vs MongoDB</div></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="seg-g" style="width:85%"></div><div class="seg-a" style="width:10%"></div><div class="seg-r" style="width:5%"></div></div>
+                  <div class="bar-labels"><span>0</span><span>100M+ rows, still fast</span><span></span></div>
+                </div>
+              </td>
+              <td><span class="badge badge-g">Need multi-master sharding or Mongo agg pipeline</span></td>
+              <td class="breakdown-note">Strongest replacement. ACID beats Mongo's flexible schema story.</td>
+            </tr>
+            <tr>
+              <td><div class="svc-name">Logical replication</div><div class="svc-sub">vs Kafka CDC</div></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="seg-g" style="width:38%"></div><div class="seg-a" style="width:27%"></div><div class="seg-r" style="width:35%"></div></div>
+                  <div class="bar-labels"><span>0</span><span>1–2 consumers</span><span>fan-out / replay</span></div>
+                </div>
+              </td>
+              <td><span class="badge badge-r">Consumer lag → WAL accumulation → disk crash risk</span></td>
+              <td class="breakdown-note">Most operationally risky swap. Always set max_slot_wal_keep_size.</td>
+            </tr>
+            <tr>
+              <td><div class="svc-name">Materialized views</div><div class="svc-sub">vs dbt</div></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="seg-g" style="width:55%"></div><div class="seg-a" style="width:30%"></div><div class="seg-r" style="width:15%"></div></div>
+                  <div class="bar-labels"><span>0</span><span>~5–10 views</span><span>complex DAG</span></div>
+                </div>
+              </td>
+              <td><span class="badge badge-a">Refresh &gt;2 min or tangled dependency graph</span></td>
+              <td class="breakdown-note">No lineage tracking or incremental models.</td>
+            </tr>
+            <tr>
+              <td><div class="svc-name">FDW</div><div class="svc-sub">vs Fivetran / Airbyte</div></td>
+              <td>
+                <div class="bar-wrap">
+                  <div class="bar-track"><div class="seg-g" style="width:50%"></div><div class="seg-a" style="width:30%"></div><div class="seg-r" style="width:20%"></div></div>
+                  <div class="bar-labels"><span>0</span><span>2–3 simple sources</span><span>many sources</span></div>
+                </div>
+              </td>
+              <td><span class="badge badge-a">WHERE clause pushdown failing in EXPLAIN</span></td>
+              <td class="breakdown-note">Failed pushdown = silent full remote table scan.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHEN NOT TO -->
+    <section id="when-not">
+      <div class="section-banner">
+        <div class="section-banner-tag">Honest limits</div>
+        <h2>When <em>not</em> to use this approach</h2>
+        <div class="section-banner-rule"></div>
+      </div>
+
+      <p>
+        This post would be dishonest without a clear-eyed look at when to reach for the 
+        dedicated tool <em>before</em> you hit any of the thresholds above. Sometimes the 
+        requirement itself — not the scale — is the deciding factor.
+      </p>
+
+      <div class="decision-framework">
+        <div class="df-header">Migrate immediately if you need any of these</div>
+        <div class="df-row">
+          <div class="df-label">Sub-ms cache latency</div>
+          <div class="df-content">If your SLA demands cache reads under 1ms — social feed hot path, session lookup at high frequency — keep Redis. Postgres RTT simply can't match in-memory.</div>
+        </div>
+        <div class="df-row">
+          <div class="df-label">High-throughput time-series</div>
+          <div class="df-content">&gt;1M writes/sec? TimescaleDB is impressive, but ClickHouse, InfluxDB, and Prometheus exist for exactly this — columnar compression and write-optimized storage are core to their architecture, not an extension.</div>
+        </div>
+        <div class="df-row">
+          <div class="df-label">Billion-vector ANN</div>
+          <div class="df-content">pgvector at 5–20M vectors with HNSW is production-solid. Beyond that, dedicated ANN systems (Qdrant, Weaviate, Milvus) have tuned disk-resident indexes that Postgres can't match.</div>
+        </div>
+        <div class="df-row">
+          <div class="df-label">Complex event streaming</div>
+          <div class="df-content">Kafka isn't just CDC — it's fan-out to 100 consumers, guaranteed ordering, offset-based replay, and consumer groups. Logical replication handles one-to-one CDC. It doesn't replace the Kafka topology.</div>
+        </div>
+        <div class="df-row">
+          <div class="df-label">Cross-service authorization</div>
+          <div class="df-content">If your authz policy needs to call Stripe, check feature flags in LaunchDarkly, or query another microservice — RLS can't do that. OPA or Casbin are the right tools for cross-service policy graphs.</div>
+        </div>
+        <div class="df-row">
+          <div class="df-label">Complex LLM orchestration</div>
+          <div class="df-content">The PL/pgSQL RAG function is elegant for simple retrieve → generate flows. Multi-agent loops, streaming responses, tool-use chains with retries, and structured output parsing benefit from a real framework.</div>
+        </div>
+      </div>
+
+      <h3>The actual decision framework for your SaaS</h3>
+
+      <p>
+        The real question isn't "when does Postgres break?" — it's "when does the ops complexity 
+        of adding a service actually pay off versus the cognitive overhead it adds?" 
+        Here's the heuristic that holds up in practice:
+      </p>
+
+      <div class="compare">
+        <div class="compare-col before">
+          <div class="compare-col-title before">Anti-pattern: premature fragmentation</div>
+          <ul class="compare-list">
+            <li>Adding Redis at 1k users "because everyone does"</li>
+            <li>Running Kafka before you have more than one consumer</li>
+            <li>Pinecone before you have 100k vectors</li>
+            <li>Elasticsearch before your search has a relevance problem</li>
+            <li>Eleven services, eleven failure modes</li>
+          </ul>
+        </div>
+        <div class="compare-col after">
+          <div class="compare-col-title after">The pragmatic path</div>
+          <ul class="compare-list">
+            <li>Under 50k MAU: Postgres-everything. Fewer failure modes, one backup strategy, atomic transactions across all data.</li>
+            <li>50k–500k MAU: monitor the specific metrics in the table above. Migrate the piece that's actually hurting.</li>
+            <li>500k+ MAU: you'll have dashboards showing the bottleneck. By then you can afford the dedicated tool and the engineer who knows it.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- VERDICT -->
+    <section id="verdict">
+      <div class="verdict">
+        <h2>One database.<br>Zero excuses.</h2>
+        <p>
+          Is Postgres the right tool for every problem at every scale? No. 
+          But it's the right starting point for almost all of them. 
+          Reach for the dedicated tool when you've hit a real, measured ceiling — 
+          not because "that's what everyone uses."
+        </p>
+        <p>
+          The threshold table above exists so you don't have to guess. 
+          When you cross those lines, you'll know.
+        </p>
+        <div class="strikethrough-list">
+          <span>Redis</span>
+          <span>Elasticsearch</span>
+          <span>Pinecone</span>
+          <span>LangChain</span>
+          <span>InfluxDB</span>
+          <span>Google Maps API</span>
+          <span>Casbin / OPA</span>
+          <span>MongoDB</span>
+          <span>dbt</span>
+          <span>Kafka CDC</span>
+          <span>Fivetran</span>
+        </div>
+        <div class="postgres-final">↓ PostgreSQL</div>
+      </div>
+    </section>
+
+  </article>
+</div>
+
+</body>
+</html>

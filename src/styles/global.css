@@ -7,13 +7,6 @@ html {
   scroll-behavior: auto;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
 
 html,
 body {
@@ -140,14 +133,18 @@ h6 {
 
 /* Social media icons */
 .social-link {
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 2rem;
   height: 2rem;
   border-radius: 0.5rem;
   transition: all 0.3s ease;
-  opacity: 0.7;
+  opacity: 0.6;
+  color: black;
+}
+
+.dark .social-link {
+  color: white;
 }
 
 .social-link:hover {
@@ -155,12 +152,18 @@ h6 {
   transform: scale(1.1);
 }
 
+/* SVGs use currentColor so they inherit from .social-link */
 .social-icon {
   width: 1.5rem;
   height: 1.5rem;
-  filter: invert(0);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.dark .social-icon {
-  filter: invert(1);
+.social-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor;
 }
+

@@ -1,80 +1,68 @@
 ---
-import * as si from "simple-icons";
-
 interface Props {
   stack: string[];
 }
 
 const { stack } = Astro.props;
 
-// Map display names to simple-icons slug keys
-const techIconMap: Record<string, string | undefined> = {
-  React: "siReact",
-  Express: "siExpress",
-  MongoDB: "siMongodb",
-  Astro: "siAstro",
-  Three: "siThreedotjs",
-  Typescript: "siTypescript",
-  MCP: "siModelcontextprotocol",
-  Npm: "siNpm",
-  Next: "siNextdotjs",
-  FFMPEG: "siFfmpeg",
-  WA: "siWebassembly",
-  Python: "siPython",
-  Node: "siNodedotjs",
-  AWS: "siAmazonwebservices",
-  Docker: "siDocker",
-  Medusa: "siMedusa",
-  Razorpay: "siRazorpay",
-  Namecheap: "siNamecheap",
-  Pinecone: undefined, // no simple-icons entry
-  Neon: "siNeon",
+const techIconMap: Record<string, { icon: string; color: string }> = {
+  React:      { icon: "react",                color: "61DAFB" },
+  Express:    { icon: "express",              color: "000000" },
+  MongoDB:    { icon: "mongodb",              color: "13AA52" },
+  OpenAI:     { icon: "openai",               color: "412991" },
+  Astro:      { icon: "astro",                color: "FF5D01" },
+  Three:      { icon: "threedotjs",           color: "000000" },
+  Typescript: { icon: "typescript",           color: "3178C6" },
+  MCP:        { icon: "modelcontextprotocol", color: "000000" },
+  Npm:        { icon: "npm",                  color: "CB3837" },
+  Next:       { icon: "nextdotjs",            color: "000000" },
+  FFMPEG:     { icon: "ffmpeg",               color: "007808" },
+  WA:         { icon: "webassembly",          color: "654FF0" },
+  Python:     { icon: "python",               color: "3776AB" },
+  Node:       { icon: "nodedotjs",            color: "339933" },
+  AWS:        { icon: "amazonaws",            color: "FF9900" },
+  Docker:     { icon: "docker",               color: "2496ED" },
+  Medusa:     { icon: "medusa",               color: "000000" },
+  Razorpay:   { icon: "razorpay",             color: "02042B" },
+  Namecheap:  { icon: "namecheap",            color: "DE3723" },
+  Neon:       { icon: "neon",                 color: "00E599" },
+  Cloudinary: { icon: "cloudinary",           color: "3448C5" },
 };
 
-interface IconEntry {
-  tech: string;
-  svg: string | null;
-  hex: string | null;
-}
-
-const icons: IconEntry[] = stack.map((tech) => {
-  const key = techIconMap[tech];
-  if (!key) return { tech, svg: null, hex: null };
-  const icon = (si as Record<string, { svg: string; hex: string } | undefined>)[key];
-  if (!icon) return { tech, svg: null, hex: null };
-  // For black icons use invert trick; for others bake the brand color into the SVG fill
-  const hex = icon.hex === "000000" ? null : icon.hex;
-  const fillColor = hex ? `#${hex}` : "currentColor";
-  const svg = icon.svg.replace('fill="currentColor"', `fill="${fillColor}"`);
-  return { tech, svg, hex };
-});
+const stackIcons = stack.slice(0, 5);
 ---
 
 <div class="tech-stack-container">
-  <div
-    class="flex gap-2 items-center max-h-0 overflow-hidden group-hover:max-h-20 transition-all duration-500 ease-in-out"
-  >
-    {
-      icons.map(({ tech, svg, hex }) => {
-        if (!svg) {
-          return (
-            <span
-              title={tech}
-              class="text-[10px] font-mono px-1 py-0.5 rounded border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 leading-none mt-1"
-            >
-              {tech}
-            </span>
-          );
-        }
-        const isBlack = hex === null;
+  <div class="flex gap-2 items-center max-h-0 overflow-hidden group-hover:max-h-20 transition-[max-height] duration-500 ease-in-out">
+    {stackIcons.map((tech) => {
+      const techData = techIconMap[tech];
+      if (!techData) {
         return (
           <span
             title={tech}
-            class={`inline-block w-5 h-5 mt-1 drop-shadow-sm [&>svg]:w-5 [&>svg]:h-5 ${isBlack ? "dark:invert" : ""}`}
-            set:html={svg}
-          />
+            class="text-[10px] font-mono px-1 py-0.5 rounded border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 leading-none mt-1"
+          >
+            {tech}
+          </span>
         );
-      })
-    }
+      }
+      const needsInvert = techData.color === "000000";
+      return (
+        <span class="inline-flex items-center mt-1" title={tech}>
+          <img
+            src={`https://cdn.simpleicons.org/${techData.icon}/${techData.color}`}
+            alt={tech}
+            class={`w-5 h-5 drop-shadow-sm ${needsInvert ? "dark:invert" : ""}`}
+            onerror="this.style.display='none';this.nextElementSibling.style.display='inline'"
+          />
+          <span
+            style="display:none"
+            class="text-[10px] font-mono px-1 py-0.5 rounded border border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400 leading-none"
+          >
+            {tech}
+          </span>
+        </span>
+      );
+    })}
   </div>
 </div>

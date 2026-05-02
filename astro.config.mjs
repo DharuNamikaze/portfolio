@@ -1,10 +1,17 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
-
+import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://dharun-builds.vercel.app',
+  integrations: [sitemap()],
+  markdown: {
+    shikiConfig: {
+      theme: 'vesper',
+    },
+  },
   image: {
     service: {
       entrypoint: 'astro/assets/services/sharp',

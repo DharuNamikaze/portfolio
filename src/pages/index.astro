@@ -29,7 +29,7 @@ const projects = [
   },
   {
     name: "Raptor3",
-    stack: ["Typescript", "Express", "MongoDB", "Pinecone", "Three"],
+    stack: ["Typescript", "Three"],
     desc: "3d-model build from scratch to experiment with low-level design and performance.",
     url: "https://github.com/DharuNamikaze/Raptor-3.git",
   },
@@ -80,17 +80,14 @@ const freelanceProjects = [
     <ul class="space-y-4">
       {
         projects.map((project) => (
-          <li class="flex flex-col sm:flex-row sm:items-baseline justify-between group">
-            <div class="flex flex-col gap-1">
-              <a
-                href={project.url}
-                class={`font-medium no-underline hover:underline w-fit`}
-              >
+          <li class="flex flex-col gap-1 group">
+            <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-0.5">
+              <a href={project.url} class="font-medium no-underline hover:underline w-fit">
                 {project.name}
               </a>
-              <TechStack stack={project.stack} />
+              <span class="text-sm description">{project.desc}</span>
             </div>
-            <span class="text-sm description">{project.desc}</span>
+            <TechStack stack={project.stack} />
           </li>
         ))
       }
@@ -121,17 +118,14 @@ const freelanceProjects = [
     <ul class="space-y-4">
       {
         freelanceProjects.map((project) => (
-          <li class="flex flex-col sm:flex-row sm:items-baseline justify-between group">
-            <div class="flex flex-col gap-1">
-              <a
-                href={project.url}
-                class={`font-medium no-underline hover:underline w-fit`}
-              >
+          <li class="flex flex-col gap-1 group">
+            <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-0.5">
+              <a href={project.url} class="font-medium no-underline hover:underline w-fit">
                 {project.name}
               </a>
-              <TechStack stack={project.stack} />
+              <span class="text-sm description">{project.desc}</span>
             </div>
-            <span class="text-sm description">{project.desc}</span>
+            <TechStack stack={project.stack} />
           </li>
         ))
       }

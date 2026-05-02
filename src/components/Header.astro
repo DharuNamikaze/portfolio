@@ -1,5 +1,7 @@
 ---
 import ThemeToggle from "./ThemeToggle.astro";
+import { readFileSync } from "fs";
+import path from "path";
 
 interface Props {
   isBlog?: boolean;
@@ -25,6 +27,18 @@ const Handles = [
   { name: "Resume", img: "resume.svg", url: "/Dharun_CV.pdf" },
 ];
 
+// Read SVG files at build time so we can inline them (currentColor works with inline SVGs)
+const publicDir = path.resolve("public");
+const handlesWithSvg = Handles.map((handle) => {
+  try {
+    const svgPath = path.join(publicDir, handle.img);
+    const svgContent = readFileSync(svgPath, "utf-8");
+    return { ...handle, svgContent };
+  } catch {
+    return { ...handle, svgContent: null };
+  }
+});
+
 let formattedDate = "";
 if (pubDate) {
   const d = typeof pubDate === "string" ? new Date(pubDate) : (pubDate as Date);
@@ -38,37 +52,48 @@ if (pubDate) {
 
 <header class="mb-10">
   <div class="flex flex-col gap-3 mb-4 mt-5">
-    <div class="flex justify-between items-start">
-      <div>
+    <div class="flex justify-between items-center">
+      <a href="/" class="text-2xl max-sm:text-xl font-bold hover:underline cursor-pointer" aria-label="Go to home">
+        Dharun / தருண்
+      </a>
+      <div class="flex gap-3 items-center">
+        {/* Desktop only: icon links */}
         {
-          isBlog && postTitle ? (
-            <div>
-              <h1 class="text-3xl max-sm:text-2xl font-bold">{postTitle}</h1>
-              {formattedDate && (
-                <time class="text-sm meta tabular-nums">{formattedDate}</time>
-              )}
-            </div>
-          ) : (
-            <h1 class="text-2xl max-sm:text-xl font-bold">Dharun / தருண்</h1>
-          )
-        }
-      </div>
-      <div class="flex gap-3 items-center flex-wrap justify-end">
-        {
-          Handles.map((handle) => (
+          handlesWithSvg.map((handle) => (
             <a
               href={handle.url}
               title={handle.name}
-              class="social-link"
+              class="social-link sm:inline-flex hidden"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <img src={`/${handle.img}`} alt={handle.name} class="social-icon" loading="lazy" />
+              {handle.svgContent ? (
+                <span class="social-icon" set:html={handle.svgContent} />
+              ) : (
+                <img src={`/${handle.img}`} alt={handle.name} class="social-icon" loading="lazy" />
+              )}
             </a>
           ))
         }
+        {/* Theme toggle always visible */}
         <ThemeToggle />
       </div>
+    </div>
+
+    {/* Mobile only: compact text link row */}
+    <div class="flex sm:hidden gap-4 text-xs opacity-60 flex-wrap">
+      {
+        handlesWithSvg.map((handle) => (
+          <a
+            href={handle.url}
+            class="hover:opacity-100 transition-opacity"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {handle.name.toLowerCase()}
+          </a>
+        ))
+      }
     </div>
     {
       !isBlog && (
