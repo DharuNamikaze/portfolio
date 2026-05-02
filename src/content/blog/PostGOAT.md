@@ -340,7 +340,7 @@ Every replacement has a different threshold. Here's the consolidated view — wh
 
 ---
 
-### When not to...
+### When not to
 
 The type of requirement will determine your requirements. If you need the following, reach for a dedicated tool immediately:
 
@@ -376,4 +376,4 @@ Adding Redis at 1k users "because that's what everyone does." That trade hands y
 
 **PostgreSQL**
 
-Is Postgres the right tool for every problem at every scale? no. But its the right place to start, for nearly all use cases. You should reach for the dedicated tool when you've actually encountered a real limit, not just because 'this is what everyone uses.'
+Is Postgres the right tool for every problem at every scale? No. But it's the right place to start for nearly all of them. reach for the dedicated tool when you've actually hit a real limit — not because "that's what everyone uses."

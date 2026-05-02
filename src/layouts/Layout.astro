@@ -19,14 +19,14 @@ const {
   isBlog = false,
   postTitle = '',
   pubDate = '',
-  description = 'Dharun R — Full-stack engineer. Building systems with scalability and security in mind.',
+  description = 'Dharun R — Full-stack engineer building scalable systems.',
   ogImage = '/og-default.png',
   tags = [],
 } = Astro.props;
 
 const siteUrl = 'https://dharun-builds.vercel.app';
 const canonicalURL = new URL(Astro.url.pathname, siteUrl).href;
-const pageTitle = 'Dharun R';
+const pageTitle = isBlog && postTitle ? postTitle : 'Dharun R';
 const ogImageURL = new URL(ogImage, siteUrl).href;
 
 // JSON-LD structured data
