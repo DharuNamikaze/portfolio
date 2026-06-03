@@ -80,7 +80,7 @@ both versions had the same root problem: 3 parts of the process needs to be kept
 
 turned the table around in v3.
 
-![Architecture Diagram](/public/diagrams/gravityArch.svg)
+![Architecture Diagram](/diagrams/gravityArch.svg)
 
 <br/>
 
