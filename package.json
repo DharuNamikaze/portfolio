@@ -13,6 +13,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "@vercel/analytics": "^1.6.1",
     "astro": "^5.16.5",
+    "gravity-lite": "^3.0.0",
     "simple-icons": "^16.16.0",
     "tailwindcss": "^4.1.18"
   },

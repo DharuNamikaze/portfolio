@@ -84,10 +84,19 @@ const { Content } = await post.render();
     padding-left: 1.5em;
   }
 
+  :global(.prose ul) {
+    list-style-type: disc;
+  }
+
+  :global(.prose ol) {
+    list-style-type: decimal;
+  }
+
   :global(.prose li) {
     margin-bottom: 0.5em;
   }
 
+  /* inline code */
   :global(.prose code) {
     background-color: #eef2ff;
     padding: 0.2em 0.45em;
@@ -103,18 +112,10 @@ const { Content } = await post.render();
     color: #e5e7eb;
   }
 
-  :global(.prose pre) {
-    background-color: #f8fafc;
-    padding: 1em;
-    border-radius: 0.75em;
-    overflow-x: auto;
-    margin-bottom: 1em;
-    border: 1px solid #e5e7eb;
-  }
-
-  :global(.dark .prose pre) {
-    background-color: #111827;
-    border-color: #374151;
+  /* reset code inside pre — Shiki owns it */
+  :global(.prose pre code),
+  :global(.dark .prose pre code) {
+    all: unset;
   }
 
   :global(.prose table) {
@@ -168,10 +169,7 @@ const { Content } = await post.render();
     padding: 0;
   }
 
-  /* Strip per-token backgrounds Shiki injects */
-  :global(.prose pre span) {
-    background-color: transparent !important;
-  }
+  /* Strip per-token backgrounds — removed, Shiki dual-theme handles this */
 </style>
 
 <script>

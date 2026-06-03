@@ -1,5 +1,5 @@
 ---
-title: "Stop Adding Services. Use Postgres."
+title: "Stop adding services. Use postgres."
 description: "A practical guide showing how Postgres can replace Redis, Elasticsearch, Pinecone, LangChain, and more for growth-stage SaaS."
 pubDate: "02-05-2026"
 tags: ["Postgres", "Databases", "Architecture", "Infrastructure"]

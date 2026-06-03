@@ -167,3 +167,15 @@ h6 {
   fill: currentColor;
 }
 
+/* Shiki code blocks: reset any prose overrides, let Shiki inline styles win */
+.astro-code,
+.astro-code code {
+  all: revert;
+}
+
+.astro-code {
+  border-radius: 0.75em !important;
+  padding: 1em !important;
+  overflow-x: auto !important;
+  margin-bottom: 1em !important;
+}
